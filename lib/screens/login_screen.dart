@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/screens/home_screen.dart';
 import 'package:oficios/screens/register_screen.dart';
 import 'package:oficios/widgets/custom_password_field.dart';
 import 'package:oficios/widgets/custom_text_field.dart';
+import 'package:oficios/widgets/logo.dart';
 import 'package:oficios/widgets/primary_button.dart';
 
 class Login extends StatefulWidget {
@@ -21,15 +23,8 @@ class _LoginState extends State<Login> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const Image(
-              image: AssetImage('assets/images/logo.jpeg'),
-              width: 60,
-              height: 60,
-            ),
-            const Text(
-              'OficiosYA',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
-            ),
+            //importamos widget del logo
+            Logo(),
             const SizedBox(height: 50),
             const Text(
               '¡Hola de nuevo!',
@@ -65,10 +60,10 @@ class _LoginState extends State<Login> {
             PrimaryButton(
               text: 'Iniciar sesión',
               onPressed: () {
-                // Lógica de inicio de sesión
+                // logica provisoria 
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
               },),
-             /*
-           */
+          
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
