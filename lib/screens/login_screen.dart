@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
         child: Column(
           children: [
             //importamos widget del logo
-            Logo(),
+            Logo(label: 'OficiosYA',),
             const SizedBox(height: 50),
             const Text(
               '¡Hola de nuevo!',
