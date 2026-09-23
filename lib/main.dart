@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/screens/login_screen.dart';
-import 'package:oficios/screens/register_screen.dart';
-
+import 'package:oficios/routes/app_router.dart';
+import 'package:oficios/routes/app_routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,12 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Oficios',
-      initialRoute: 'login',
-      routes:{
-        "login": (BuildContext context) => const Login(),
-        "register":(BuildContext context) => const Register()
-        
-      },
+      initialRoute: AppRoutes.login,
+      routes: AppRouter.routes,
     );
   }
 }

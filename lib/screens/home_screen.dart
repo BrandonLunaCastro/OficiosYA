@@ -1,9 +1,19 @@
 import "package:flutter/material.dart";
+import "package:oficios/widgets/primary_button.dart";
+import "package:oficios/widgets/role_selection_card.dart";
 
 import "../widgets/logo.dart";
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // 0 = ninguno, 1 = cliente, 2 = profesional
+  int selectedRole = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +40,46 @@ class HomeScreen extends StatelessWidget {
                         color: Color.fromARGB(255, 82, 82, 82),
                         fontSize: 16,
                       ),
+                    ),
+                    const SizedBox(height: 40),
+                    RoleSelectionCard(
+                      icon: Icons.search,
+                      title: "Busco un oficio",
+                      description: "Encuentra electricistas, plomeros y prestadores calificados.",
+                      selected: selectedRole == 1,
+                      onTap: () => setState(() => selectedRole = 1),
+                    ),
+                    const SizedBox(height: 16),
+                    RoleSelectionCard(
+                      icon: Icons.person,
+                      title: "Soy un profesional",
+                      description: "Me dedico a ofrecer servicios de reparación y mantenimiento.",
+                      selected: selectedRole == 2,
+                      onTap: () => setState(() => selectedRole = 2),
+                    ),
+                    const SizedBox(height: 40),
+                    PrimaryButton(
+                      text: "Continuar",
+                      onPressed: () {
+                        if (selectedRole == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Por favor selecciona un rol para continuar.",
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Esta sección estará disponible próximamente.",
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
