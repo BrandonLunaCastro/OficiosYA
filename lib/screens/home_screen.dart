@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
-import "package:oficios/widgets/primary_button.dart";
+import "package:oficios/routes/app_routes.dart";
 import "package:oficios/widgets/role_selection_card.dart";
+import "package:oficios/widgets/primary_button.dart";
 
 import "../widgets/logo.dart";
 
@@ -15,6 +16,17 @@ class _HomeScreenState extends State<HomeScreen> {
   // 0 = ninguno, 1 = cliente, 2 = profesional
   int selectedRole = 0;
 
+  void _continuar() {
+    if (selectedRole == 0) return; // no eligió nada todavía
+
+    // Como es primer registro, siempre va a completar su perfil
+    if (selectedRole == 1) {
+      Navigator.pushReplacementNamed(context, AppRoutes.editProfileClient);
+    } else if (selectedRole == 2) {
+      Navigator.pushReplacementNamed(context, AppRoutes.editProfileProfessional);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,9 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - 40,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,10 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       "Conectamos personas que necesitan un arreglo con profesionales calificados de la zona.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 82, 82, 82),
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Color.fromARGB(255, 82, 82, 82), fontSize: 16),
                     ),
                     const SizedBox(height: 40),
                     RoleSelectionCard(
@@ -57,29 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       selected: selectedRole == 2,
                       onTap: () => setState(() => selectedRole = 2),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 30),
                     PrimaryButton(
-                      text: "Continuar",
-                      onPressed: () {
-                        if (selectedRole == 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Por favor selecciona un rol para continuar.",
-                              ),
-                            ),
-                          );
-                          return;
-                        }
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Esta sección estará disponible próximamente.",
-                            ),
-                          ),
-                        );
-                      },
+                      text: 'Continuar',
+                      onPressed: _continuar,
                     ),
                   ],
                 ),

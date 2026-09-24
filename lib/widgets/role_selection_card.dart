@@ -26,7 +26,6 @@ class RoleSelectionCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: selected ? primaryColor : Colors.grey.shade300,
@@ -40,7 +39,7 @@ class RoleSelectionCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
+                color: primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: primaryColor),
@@ -52,7 +51,10 @@ class RoleSelectionCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -62,7 +64,6 @@ class RoleSelectionCard extends StatelessWidget {
                 ],
               ),
             ),
-            
           ],
         ),
       ),

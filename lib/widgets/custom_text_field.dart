@@ -25,10 +25,13 @@ class CustomTextField extends StatelessWidget {
         children: [
           Text(
             label,
-            style:const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 10),
           TextField(
+            controller: controller, // <- esto faltaba
+            keyboardType: keyBoardType,
+            obscureText: isPassword, // ya que está el parámetro, aprovechalo también
             decoration: InputDecoration(
               hintText: hint,
               border: OutlineInputBorder(
