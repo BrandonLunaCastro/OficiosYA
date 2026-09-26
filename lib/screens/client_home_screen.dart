@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/data/mock_provider.dart';
 import 'package:oficios/models/user_profile.dart';
 import 'package:oficios/routes/app_routes.dart';
+import 'package:oficios/screens/provider_profile_screen.dart';
 import 'package:oficios/widgets/app_bottom_nav.dart';
 import 'package:oficios/widgets/category_item.dart';
 import 'package:oficios/widgets/home_top_bar.dart';
@@ -87,32 +89,19 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const ProviderCard(
-                      initials: 'CR',
-                      name: 'Carlos Rodriguez',
-                      specialty: 'Plomero verificado',
-                      rating: 4.8,
-                      reviews: 45,
-                      distanceKm: 1.5,
-                      jobsCount: 120,
-                    ),
-                    const ProviderCard(
-                      initials: 'JL',
-                      name: 'Jorge López',
-                      specialty: 'Electricista verificado',
-                      rating: 4.9,
-                      reviews: 32,
-                      distanceKm: 2.2,
-                      jobsCount: 94,
-                    ),
-                    const ProviderCard(
-                      initials: 'MG',
-                      name: 'Martín Gómez',
-                      specialty: 'Pintor verificado',
-                      rating: 4.6,
-                      reviews: 18,
-                      distanceKm: 3.1,
-                      jobsCount: 50,
+                    ...mockProviders.map(
+                      (provider) => ProviderCard(
+                        provider: provider,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProviderProfileScreen(provider: provider),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -123,7 +112,12 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
       ),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _navIndex,
-        onTap: (index) => setState(() => _navIndex = index),
+        onTap: (index) {
+          setState(() => _navIndex = index);
+          if (index == 3) {
+            Navigator.pushNamed(context, AppRoutes.editProfileClient);
+          }
+        },
       ),
     );
   }
