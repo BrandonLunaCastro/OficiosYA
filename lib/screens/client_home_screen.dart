@@ -3,6 +3,7 @@ import 'package:oficios/data/mock_provider.dart';
 import 'package:oficios/models/user_profile.dart';
 import 'package:oficios/routes/app_routes.dart';
 import 'package:oficios/screens/provider_profile_screen.dart';
+import 'package:oficios/screens/search_results_screen.dart';
 import 'package:oficios/widgets/app_bottom_nav.dart';
 import 'package:oficios/widgets/category_item.dart';
 import 'package:oficios/widgets/home_top_bar.dart';
@@ -41,7 +42,16 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SearchBarField(),
+                    SearchBarField(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SearchResultsScreen(),
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +124,16 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
         currentIndex: _navIndex,
         onTap: (index) {
           setState(() => _navIndex = index);
-          if (index == 3) {
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SearchResultsScreen(),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.pushNamed(context, AppRoutes.orders);
+          } else if (index == 3) {
             Navigator.pushNamed(context, AppRoutes.editProfileClient);
           }
         },

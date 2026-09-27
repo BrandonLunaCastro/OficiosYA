@@ -7,6 +7,8 @@ class Provider {
   final double distanceKm;
   final int jobsCount;
   final String aboutMe;
+  final String phone;
+  final String email;
 
   const Provider({
     required this.initials,
@@ -17,5 +19,7 @@ class Provider {
     required this.distanceKm,
     required this.jobsCount,
     this.aboutMe = '',
+    this.phone = '',
+    this.email = '',
   });
 }

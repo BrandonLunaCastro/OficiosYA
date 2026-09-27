@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Oficios',
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.splash, 
       routes: AppRouter.routes,
     );
   }

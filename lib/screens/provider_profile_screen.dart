@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/models/provider.dart';
+import 'package:oficios/screens/contact_success_screen.dart';
 import 'package:oficios/widgets/primary_button.dart';
 import 'package:oficios/widgets/provider_start.dart';
 
@@ -164,11 +165,16 @@ class ProviderProfileScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20),
               child: PrimaryButton(
-                text: 'Solicitar presupuesto directo →',
-                onPressed: () {
-                  // Lógica para solicitar presupuesto
-                },
-              ),
+              text: 'Solicitar presupuesto directo →',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactSuccessScreen(provider: provider),
+                  ),
+                );
+              },
+            ),
             ),
           ],
         ),

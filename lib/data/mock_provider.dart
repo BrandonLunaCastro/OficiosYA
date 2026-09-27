@@ -11,6 +11,8 @@ const List<Provider> mockProviders = [
     jobsCount: 120,
     aboutMe:
         'Hola, soy Carlos. Ofrezco servicios profesionales de plomería y gasista matriculado. Más de 10 años de experiencia solucionando filtraciones, instalaciones y urgencias del hogar. Trabajo limpio, rápido y garantizado.',
+    phone: '+54 261 555-0129',
+    email: 'carlos.p@reparaseguro.com',
   ),
   Provider(
     initials: 'JL',
@@ -22,6 +24,8 @@ const List<Provider> mockProviders = [
     jobsCount: 94,
     aboutMe:
         'Electricista matriculado con experiencia en instalaciones domiciliarias e industriales. Trabajos garantizados y presupuesto sin cargo.',
+    phone: '+54 261 555-0187',
+    email: 'jorge.lopez@electricistas.com',
   ),
   Provider(
     initials: 'MG',
@@ -33,5 +37,7 @@ const List<Provider> mockProviders = [
     jobsCount: 50,
     aboutMe:
         'Pintor profesional especializado en interiores y exteriores. Uso de materiales de calidad y terminaciones prolijas.',
+    phone: '+54 261 555-0143',
+    email: 'martin.gomez@pinturas.com',
   ),
 ];

@@ -10,12 +10,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:oficios/main.dart';
 
 void main() {
-  testWidgets('Muestra la pantalla de inicio de sesión', (
+  testWidgets('Muestra la pantalla de onboarding después del splash', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const MyApp());
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
 
-    expect(find.text('¡Hola de nuevo!'), findsOneWidget);
-    expect(find.text('Iniciar sesión'), findsOneWidget);
+    expect(find.text('Encontrá prestadores cerca tuyo'), findsOneWidget);
+    expect(find.text('Omitir'), findsOneWidget);
   });
 }
