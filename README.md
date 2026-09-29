@@ -58,12 +58,21 @@ assets/
 
 ### Avance 1 — Setup y primera pantalla
 <!-- ![Bienvenida](docs/screenshots/01_bienvenida.png) -->
+<img width="720" height="1600" alt="Screenshot_20260928-220242" src="https://github.com/user-attachments/assets/49ae48df-696d-4d5e-920e-4c61216d4a14" />
 
 ### Avance 2 — Home y resultados
 <!-- ![Home](docs/screenshots/02_home.png) -->
+<img width="720" height="1600" alt="Screenshot_20260928-220347" src="https://github.com/user-attachments/assets/91beb973-a1be-4a8c-b187-adcdf417189b" />
 
 ### Avance 3 — Perfil del prestador
-<!-- ![Perfil](docs/screenshots/03_perfil.png) -->
+<!-- ![Perfil](docs/screenshots/03_perfil.png) --><img width="720" height="1600" alt="Screenshot_20260928-220356" src="https://github.com/user-attachments/assets/259fb3ed-b643-450a-a5e3-3807d41a0cb8" />
+![Uploading Screenshot_20260928-220356.png…]()
+
+### Avance 4 — Buscador
+
+<img width="720" height="1600" alt="Screenshot_20260928-220500" src="https://github.com/user-attachments/assets/7b55f8b9-dfc6-4c33-8b8d-99596f5d62f2" />
+
+<img width="720" height="1600" alt="Screenshot_20260928-220431" src="https://github.com/user-attachments/assets/245fba0e-48f2-463a-9cfc-c20a99b3afaf" />
 
 ## 7. Cómo ejecutar
 
