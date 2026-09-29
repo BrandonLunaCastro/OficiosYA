@@ -65,8 +65,8 @@ assets/
 <img width="720" height="1600" alt="Screenshot_20260928-220347" src="https://github.com/user-attachments/assets/91beb973-a1be-4a8c-b187-adcdf417189b" />
 
 ### Avance 3 — Perfil del prestador
-<!-- ![Perfil](docs/screenshots/03_perfil.png) --><img width="720" height="1600" alt="Screenshot_20260928-220356" src="https://github.com/user-attachments/assets/259fb3ed-b643-450a-a5e3-3807d41a0cb8" />
-![Uploading Screenshot_20260928-220356.png…]()
+<!-- ![Perfil](docs/screenshots/03_perfil.png) -->
+<img width="720" height="1600" alt="Screenshot_20260928-220356" src="https://github.com/user-attachments/assets/259fb3ed-b643-450a-a5e3-3807d41a0cb8" />
 
 ### Avance 4 — Buscador
 
