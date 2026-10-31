@@ -6,6 +6,9 @@ class OrderRequest {
   final String time;
   final String phone;
   final String email;
+  final String clientName;
+  final String location;
+  final String status;
 
   const OrderRequest({
     required this.service,
@@ -15,5 +18,8 @@ class OrderRequest {
     required this.time,
     required this.phone,
     required this.email,
+    this.clientName = '',
+    this.location = 'Mendoza',
+    this.status = 'Pendiente',
   });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/data/mock_provider.dart';
 import 'package:oficios/models/user_profile.dart';
+import 'package:oficios/repositories/oficios_repository.dart';
 import 'package:oficios/routes/app_routes.dart';
 import 'package:oficios/screens/provider_profile_screen.dart';
 import 'package:oficios/screens/search_results_screen.dart';
@@ -24,6 +24,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final profile = UserProfile.instance;
+    final providers = OficiosRepository.instance.obtenerPrestadores();
 
     return Scaffold(
       body: SafeArea(
@@ -99,7 +100,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ...mockProviders.map(
+                    ...providers.map(
                       (provider) => ProviderCard(
                         provider: provider,
                         onTap: () {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/data/mock_provider.dart';
 import 'package:oficios/models/provider.dart';
+import 'package:oficios/repositories/oficios_repository.dart';
 import 'package:oficios/screens/provider_profile_screen.dart';
 import 'package:oficios/widgets/filter_chip_button.dart';
 import 'package:oficios/widgets/provider_card.dart';
@@ -34,18 +34,16 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
 
   List<Provider> get _filteredProviders {
-    final query = _searchController.text.trim().toLowerCase();
+    final query = _searchController.text.trim();
+    final repository = OficiosRepository.instance;
 
-    return mockProviders.where((provider) {
-      final matchesQuery = query.isEmpty ||
-          provider.name.toLowerCase().contains(query) ||
-          provider.specialty.toLowerCase().contains(query);
+    final providers = repository.buscarPrestadores(
+      query: query,
+      ratingMin: _filterRating45 ? 4.5 : null,
+      maxDistanceKm: _filterMenos5km ? 5 : null,
+    );
 
-      final matchesRating = !_filterRating45 || provider.rating >= 4.5;
-      final matchesDistance = !_filterMenos5km || provider.distanceKm < 5;
-
-      return matchesQuery && matchesRating && matchesDistance;
-    }).toList()
+    return providers
       ..sort((a, b) {
         if (_filterDestacados) return b.rating.compareTo(a.rating);
         return 0;

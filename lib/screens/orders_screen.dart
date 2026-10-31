@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/data/mock_orders.dart';
+import 'package:oficios/repositories/oficios_repository.dart';
 import 'package:oficios/routes/app_routes.dart';
 import 'package:oficios/widgets/app_bottom_nav.dart';
 import 'package:oficios/widgets/contact_info_sheet.dart';
@@ -17,6 +17,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final orders = OficiosRepository.instance.obtenerSolicitudes();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pedidos', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -25,13 +27,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
         ],
       ),
       body: SafeArea(
-        child: mockOrders.isEmpty
+        child: orders.isEmpty
             ? Center(
                 child: Text('Todavía no tenés pedidos', style: TextStyle(color: Colors.grey.shade600)),
               )
             : ListView(
                 padding: const EdgeInsets.all(20),
-                children: mockOrders
+                children: orders
                     .map((order) => OrderCard(
                           order: order,
                           onViewContact: () => showContactInfoSheet(context, order),

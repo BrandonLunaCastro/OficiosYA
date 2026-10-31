@@ -1,7 +1,9 @@
 class Provider {
+  final String id;
   final String initials;
   final String name;
   final String specialty;
+  final String categoria;
   final double rating;
   final int reviews;
   final double distanceKm;
@@ -9,11 +11,15 @@ class Provider {
   final String aboutMe;
   final String phone;
   final String email;
+  final String coverageZone;
+  final String availabilityStatus;
 
   const Provider({
+    this.id = '',
     required this.initials,
     required this.name,
     required this.specialty,
+    this.categoria = '',
     required this.rating,
     required this.reviews,
     required this.distanceKm,
@@ -21,5 +27,7 @@ class Provider {
     this.aboutMe = '',
     this.phone = '',
     this.email = '',
+    this.coverageZone = 'Mendoza Capital',
+    this.availabilityStatus = 'Disponible esta semana',
   });
 }
