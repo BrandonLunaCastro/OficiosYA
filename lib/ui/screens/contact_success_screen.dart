@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/models/provider.dart';
 import 'package:oficios/routes/app_routes.dart';
-import 'package:oficios/widgets/contact_option_title.dart';
-import 'package:oficios/widgets/primary_button.dart';
+import 'package:oficios/ui/widgets/contact_option_title.dart';
+import 'package:oficios/ui/widgets/primary_button.dart';
 
 class ContactSuccessScreen extends StatelessWidget {
   final Provider provider;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/routes/app_routes.dart';
-import 'package:oficios/widgets/custom_password_field.dart';
-import 'package:oficios/widgets/custom_text_field.dart';
-import 'package:oficios/widgets/logo.dart';
-import 'package:oficios/widgets/primary_button.dart';
+import 'package:oficios/ui/widgets/custom_password_field.dart';
+import 'package:oficios/ui/widgets/custom_text_field.dart';
+import 'package:oficios/ui/widgets/logo.dart';
+import 'package:oficios/ui/widgets/primary_button.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/models/order_request.dart';
-import 'package:oficios/widgets/contact_option_title.dart';
+import 'package:oficios/ui/widgets/contact_option_title.dart';
 
 void showContactInfoSheet(BuildContext context, OrderRequest order) {
   showModalBottomSheet(

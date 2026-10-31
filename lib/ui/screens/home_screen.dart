@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:oficios/routes/app_routes.dart";
-import "package:oficios/widgets/role_selection_card.dart";
-import "package:oficios/widgets/primary_button.dart";
+import "package:oficios/ui/widgets/role_selection_card.dart";
+import "package:oficios/ui/widgets/primary_button.dart";
 
-import "../widgets/logo.dart";
+import 'package:oficios/ui/widgets/logo.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

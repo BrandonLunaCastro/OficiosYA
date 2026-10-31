@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/models/user_profile.dart';
+import 'package:oficios/data/repositories/user_profile_repository.dart';
 import 'package:oficios/routes/app_routes.dart';
-import 'package:oficios/widgets/custom_text_field.dart';
-import 'package:oficios/widgets/primary_button.dart';
-import 'package:oficios/widgets/profile_avatar_picker.dart';
+import 'package:oficios/ui/widgets/custom_text_field.dart';
+import 'package:oficios/ui/widgets/primary_button.dart';
+import 'package:oficios/ui/widgets/profile_avatar_picker.dart';
 
 class EditProfileClientScreen extends StatefulWidget {
-  const EditProfileClientScreen({super.key});
+  const EditProfileClientScreen({super.key, required this.profileRepository});
+
+  final UserProfileRepository profileRepository;
 
   @override
   State<EditProfileClientScreen> createState() =>
@@ -14,18 +16,20 @@ class EditProfileClientScreen extends StatefulWidget {
 }
 
 class _EditProfileClientScreenState extends State<EditProfileClientScreen> {
-  final _nameController = TextEditingController(
-    text: UserProfile.instance.name,
-  );
-  final _emailController = TextEditingController(
-    text: UserProfile.instance.email,
-  );
-  final _phoneController = TextEditingController(
-    text: UserProfile.instance.phone,
-  );
-  final _locationController = TextEditingController(
-    text: UserProfile.instance.location,
-  );
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _locationController;
+
+  @override
+  void initState() {
+    super.initState();
+    final profile = widget.profileRepository.getProfile();
+    _nameController = TextEditingController(text: profile.name);
+    _emailController = TextEditingController(text: profile.email);
+    _phoneController = TextEditingController(text: profile.phone);
+    _locationController = TextEditingController(text: profile.location);
+  }
 
   @override
   void dispose() {
@@ -37,10 +41,15 @@ class _EditProfileClientScreenState extends State<EditProfileClientScreen> {
   }
 
   void _guardarCambios() {
-    UserProfile.instance.name = _nameController.text;
-    UserProfile.instance.email = _emailController.text;
-    UserProfile.instance.phone = _phoneController.text;
-    UserProfile.instance.location = _locationController.text;
+    final profile = widget.profileRepository.getProfile();
+    widget.profileRepository.saveProfile(
+      profile.copyWith(
+        name: _nameController.text,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        location: _locationController.text,
+      ),
+    );
 
     Navigator.pushNamedAndRemoveUntil(
       context,
@@ -59,7 +68,11 @@ class _EditProfileClientScreenState extends State<EditProfileClientScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              const Center(child: ProfileAvatarPicker(initials: 'LG')),
+              Center(
+                child: ProfileAvatarPicker(
+                  initials: widget.profileRepository.getProfile().initials,
+                ),
+              ),
               const SizedBox(height: 20),
               CustomTextField(
                 label: "Nombre completo",

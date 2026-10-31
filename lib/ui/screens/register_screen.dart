@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/widgets/custom_password_field.dart';
-import 'package:oficios/widgets/custom_text_field.dart';
-import 'package:oficios/widgets/primary_button.dart';
-import 'package:oficios/widgets/terms_checkbox.dart';
+import 'package:oficios/ui/widgets/custom_password_field.dart';
+import 'package:oficios/ui/widgets/custom_text_field.dart';
+import 'package:oficios/ui/widgets/primary_button.dart';
+import 'package:oficios/ui/widgets/terms_checkbox.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

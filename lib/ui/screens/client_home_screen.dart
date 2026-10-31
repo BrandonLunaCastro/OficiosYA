@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/models/user_profile.dart';
-import 'package:oficios/repositories/oficios_repository.dart';
+import 'package:oficios/data/repositories/provider_repository.dart';
+import 'package:oficios/data/repositories/user_profile_repository.dart';
+import 'package:oficios/models/provider.dart';
 import 'package:oficios/routes/app_routes.dart';
-import 'package:oficios/screens/provider_profile_screen.dart';
-import 'package:oficios/screens/search_results_screen.dart';
-import 'package:oficios/widgets/app_bottom_nav.dart';
-import 'package:oficios/widgets/category_item.dart';
-import 'package:oficios/widgets/home_top_bar.dart';
-import 'package:oficios/widgets/provider_card.dart';
-import 'package:oficios/widgets/search_bar_field.dart';
-import 'package:oficios/widgets/urgency_banner.dart';
+import 'package:oficios/ui/screens/provider_profile_screen.dart';
+import 'package:oficios/ui/screens/search_results_screen.dart';
+import 'package:oficios/ui/widgets/app_bottom_nav.dart';
+import 'package:oficios/ui/widgets/category_item.dart';
+import 'package:oficios/ui/widgets/home_top_bar.dart';
+import 'package:oficios/ui/widgets/provider_card.dart';
+import 'package:oficios/ui/widgets/search_bar_field.dart';
+import 'package:oficios/ui/widgets/urgency_banner.dart';
 
 class ClientHomeScreen extends StatefulWidget {
-  const ClientHomeScreen({super.key});
+  const ClientHomeScreen({
+    super.key,
+    required this.profileRepository,
+    required this.providerRepository,
+  });
+
+  final UserProfileRepository profileRepository;
+  final ProviderRepository providerRepository;
 
   @override
   State<ClientHomeScreen> createState() => _ClientHomeScreenState();
@@ -20,11 +28,17 @@ class ClientHomeScreen extends StatefulWidget {
 
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
   int _navIndex = 0;
+  late final Future<List<Provider>> _providersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _providersFuture = widget.providerRepository.getProviders();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final profile = UserProfile.instance;
-    final providers = OficiosRepository.instance.obtenerPrestadores();
+    final profile = widget.profileRepository.getProfile();
 
     return Scaffold(
       body: SafeArea(
@@ -48,7 +62,9 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SearchResultsScreen(),
+                            builder: (context) => SearchResultsScreen(
+                              providerRepository: widget.providerRepository,
+                            ),
                           ),
                         );
                       },
@@ -100,19 +116,40 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ...providers.map(
-                      (provider) => ProviderCard(
-                        provider: provider,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProviderProfileScreen(provider: provider),
-                            ),
+                    FutureBuilder<List<Provider>>(
+                      future: _providersFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text(
+                            'No se pudieron cargar los prestadores.',
                           );
-                        },
-                      ),
+                        }
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return Column(
+                          children: snapshot.data!
+                              .map(
+                                (provider) => ProviderCard(
+                                  provider: provider,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProviderProfileScreen(
+                                              provider: provider,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -129,7 +166,9 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const SearchResultsScreen(),
+                builder: (context) => SearchResultsScreen(
+                  providerRepository: widget.providerRepository,
+                ),
               ),
             );
           } else if (index == 2) {

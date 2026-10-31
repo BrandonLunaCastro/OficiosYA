@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/models/provider.dart';
-import 'package:oficios/screens/contact_success_screen.dart';
-import 'package:oficios/widgets/primary_button.dart';
-import 'package:oficios/widgets/provider_start.dart';
+import 'package:oficios/ui/screens/contact_success_screen.dart';
+import 'package:oficios/ui/widgets/primary_button.dart';
+import 'package:oficios/ui/widgets/provider_start.dart';
 
 class ProviderProfileScreen extends StatelessWidget {
   final Provider provider;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/widgets/custom_text_field.dart';
-import 'package:oficios/widgets/primary_button.dart';
-import 'package:oficios/widgets/profile_avatar_picker.dart';
-import 'package:oficios/widgets/section_title.dart';
+import 'package:oficios/ui/widgets/custom_text_field.dart';
+import 'package:oficios/ui/widgets/primary_button.dart';
+import 'package:oficios/ui/widgets/profile_avatar_picker.dart';
+import 'package:oficios/ui/widgets/section_title.dart';
 
 class EditProfileProfessionalScreen extends StatelessWidget {
   const EditProfileProfessionalScreen({super.key});

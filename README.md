@@ -34,15 +34,28 @@ Hoy contratar un oficio depende de recomendaciones informales o de búsquedas po
 
 ```
 lib/
-├── main.dart          # punto de entrada y rutas
-├── theme/             # colores y estilos
-├── screens/           # una clase por pantalla
-├── widgets/           # componentes reutilizables
-└── models/            # datos de ejemplo
+├── main.dart                 # punto de entrada
+├── routes/                   # rutas de navegación
+├── models/                   # entidades y conversiones de datos
+├── data/
+│   ├── mocks/                # datos ficticios para desarrollo
+│   └── repositories/         # contratos e implementaciones de acceso a datos
+└── ui/
+    ├── screens/              # pantallas; coordinan UI y repositorios
+    └── widgets/              # componentes visuales reutilizables
 assets/
 ├── images/
 └── fonts/
 ```
+
+### Responsabilidades y dependencias
+
+- Los modelos (`models/`) representan datos sin depender de Flutter ni de la UI.
+- Los contratos de `data/repositories/` describen las operaciones que necesita la aplicación; las implementaciones mock obtienen datos de `data/mocks/`.
+- Las pantallas reciben los contratos de repositorio y no conocen dónde ni cómo se almacenan los datos.
+- `routes/` conecta las pantallas con las implementaciones concretas. Para cambiar el origen de datos, se agrega una implementación del contrato y se selecciona allí.
+- `data/mocks/` contiene fixtures de desarrollo, no lógica de presentación ni acceso SQL. No se agrega una carpeta de utilidades hasta que haya funciones puras compartidas que la necesiten.
+- La aplicación todavía no usa SQLite ni una base de datos remota; la persistencia actual en memoria se pierde al reiniciar.
 
 ## 5. Lógica de las funcionalidades
 
