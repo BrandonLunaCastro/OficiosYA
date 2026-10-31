@@ -87,23 +87,20 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        CategoryItem(icon: Icons.plumbing, label: 'Plomería'),
-                        CategoryItem(
-                          icon: Icons.electrical_services,
-                          label: 'Electricidad',
-                        ),
-                        CategoryItem(
-                          icon: Icons.water_drop_outlined,
-                          label: 'Limpieza',
-                        ),
-                        CategoryItem(
-                          icon: Icons.format_paint_outlined,
-                          label: 'Pintura',
-                        ),
-                      ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _categoryItem(Icons.plumbing, 'Plomería'),
+                          _categoryItem(
+                            Icons.electrical_services,
+                            'Electricidad',
+                          ),
+                          _categoryItem(Icons.build_outlined, 'Mecánica'),
+                          _categoryItem(Icons.format_paint_outlined, 'Pintura'),
+                          _categoryItem(Icons.local_fire_department, 'Gas'),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 24),
                     const UrgencyBanner(),
@@ -176,6 +173,27 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           } else if (index == 3) {
             Navigator.pushNamed(context, AppRoutes.editProfileClient);
           }
+        },
+      ),
+    );
+  }
+
+  Widget _categoryItem(IconData icon, String category) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: CategoryItem(
+        icon: icon,
+        label: category,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchResultsScreen(
+                providerRepository: widget.providerRepository,
+                initialCategory: category,
+              ),
+            ),
+          );
         },
       ),
     );

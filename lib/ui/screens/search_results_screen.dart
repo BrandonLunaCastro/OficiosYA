@@ -7,11 +7,13 @@ import 'package:oficios/ui/widgets/provider_card.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final String initialQuery;
+  final String? initialCategory;
   final ProviderRepository providerRepository;
 
   const SearchResultsScreen({
     super.key,
     this.initialQuery = '',
+    this.initialCategory,
     required this.providerRepository,
   });
 
@@ -43,6 +45,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   Future<List<Provider>> _loadProviders() {
     return widget.providerRepository.searchProviders(
       query: _searchController.text.trim(),
+      category: widget.initialCategory,
       ratingMin: _filterRating45 ? 4.5 : null,
       maxDistanceKm: _filterMenos5km ? 5 : null,
     );
@@ -89,6 +92,20 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 ],
               ),
             ),
+            if (widget.initialCategory != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Prestadores de ${widget.initialCategory}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(

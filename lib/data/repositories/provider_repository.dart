@@ -5,6 +5,7 @@ abstract interface class ProviderRepository {
 
   Future<List<Provider>> searchProviders({
     String query = '',
+    String? category,
     double? ratingMin,
     double? maxDistanceKm,
   });

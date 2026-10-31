@@ -25,6 +25,24 @@ void main() {
       expect(providers.single.name, 'Carlos Rodríguez');
     });
 
+    test('filters providers by selected category', () async {
+      const repository = MockProviderRepository();
+
+      final providers = await repository.searchProviders(
+        category: 'Electricidad',
+      );
+
+      expect(providers, hasLength(2));
+      expect(
+        providers.every(
+          (provider) =>
+              provider.categoria == 'electricidad' ||
+              provider.specialty.toLowerCase().contains('electricista'),
+        ),
+        isTrue,
+      );
+    });
+
     test('does not expose a mutable provider list', () async {
       const repository = MockProviderRepository();
       final providers = await repository.getProviders();
