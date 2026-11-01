@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/data/repositories/in_memory_user_profile_repository.dart';
+import 'package:oficios/data/repositories/in_memory_order_repository.dart';
 import 'package:oficios/data/repositories/mock_onboarding_repository.dart';
-import 'package:oficios/data/repositories/mock_order_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_repository.dart';
 import 'package:oficios/ui/screens/client_home_screen.dart';
 import 'package:oficios/ui/screens/edit_profile_client_screen.dart';
@@ -34,8 +34,9 @@ class AppRouter {
     AppRoutes.clientHome: (context) => ClientHomeScreen(
       profileRepository: InMemoryUserProfileRepository.instance,
       providerRepository: const MockProviderRepository(),
+      orderRepository: InMemoryOrderRepository.instance,
     ),
     AppRoutes.orders: (context) =>
-        const OrdersScreen(orderRepository: MockOrderRepository()),
+        OrdersScreen(orderRepository: InMemoryOrderRepository.instance),
   };
 }

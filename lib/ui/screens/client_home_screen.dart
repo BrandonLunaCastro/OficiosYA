@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/data/repositories/order_repository.dart';
 import 'package:oficios/data/repositories/provider_repository.dart';
 import 'package:oficios/data/repositories/user_profile_repository.dart';
 import 'package:oficios/models/provider.dart';
@@ -17,10 +18,12 @@ class ClientHomeScreen extends StatefulWidget {
     super.key,
     required this.profileRepository,
     required this.providerRepository,
+    required this.orderRepository,
   });
 
   final UserProfileRepository profileRepository;
   final ProviderRepository providerRepository;
+  final OrderRepository orderRepository;
 
   @override
   State<ClientHomeScreen> createState() => _ClientHomeScreenState();
@@ -64,6 +67,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                           MaterialPageRoute(
                             builder: (context) => SearchResultsScreen(
                               providerRepository: widget.providerRepository,
+                              orderRepository: widget.orderRepository,
+                              profileRepository: widget.profileRepository,
                             ),
                           ),
                         );
@@ -138,6 +143,10 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                                         builder: (context) =>
                                             ProviderProfileScreen(
                                               provider: provider,
+                                              orderRepository:
+                                                  widget.orderRepository,
+                                              profileRepository:
+                                                  widget.profileRepository,
                                             ),
                                       ),
                                     );
@@ -165,6 +174,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
               MaterialPageRoute(
                 builder: (context) => SearchResultsScreen(
                   providerRepository: widget.providerRepository,
+                  orderRepository: widget.orderRepository,
+                  profileRepository: widget.profileRepository,
                 ),
               ),
             );
@@ -190,6 +201,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
             MaterialPageRoute(
               builder: (context) => SearchResultsScreen(
                 providerRepository: widget.providerRepository,
+                orderRepository: widget.orderRepository,
+                profileRepository: widget.profileRepository,
                 initialCategory: category,
               ),
             ),

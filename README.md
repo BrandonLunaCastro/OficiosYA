@@ -56,6 +56,7 @@ assets/
 - `routes/` conecta las pantallas con las implementaciones concretas. Para cambiar el origen de datos, se agrega una implementación del contrato y se selecciona allí.
 - `data/mocks/` contiene fixtures de desarrollo, no lógica de presentación ni acceso SQL. No se agrega una carpeta de utilidades hasta que haya funciones puras compartidas que la necesiten.
 - La aplicación todavía no usa SQLite ni una base de datos remota; la persistencia actual en memoria se pierde al reiniciar.
+- Las solicitudes de presupuesto se agregan a “Pedidos” durante la sesión actual. Como todavía no hay base de datos, se pierden al cerrar la aplicación.
 
 ## 5. Lógica de las funcionalidades
 

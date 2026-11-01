@@ -54,7 +54,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
             if (orders.isEmpty) {
               return Center(
                 child: Text(
-                  'Todavía no tenés pedidos',
+                  'Todavía no tenés pedidos. Cuando solicites un presupuesto, lo vas a ver acá.',
+                  textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
               );

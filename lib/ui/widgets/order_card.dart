@@ -5,7 +5,11 @@ class OrderCard extends StatelessWidget {
   final OrderRequest order;
   final VoidCallback onViewContact;
 
-  const OrderCard({super.key, required this.order, required this.onViewContact});
+  const OrderCard({
+    super.key,
+    required this.order,
+    required this.onViewContact,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +26,41 @@ class OrderCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(order.service, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Expanded(
+                child: Text(
+                  order.service,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text(
-                '${order.date} • ${order.time}',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                order.status,
+                style: const TextStyle(
+                  color: Color(0xFF2B66DF),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
+          const SizedBox(height: 4),
+          Text(
+            '${order.date} • ${order.time}',
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          ),
           const SizedBox(height: 6),
           Text(order.providerName, style: const TextStyle(fontSize: 14)),
+          if (order.location.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              order.location,
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            ),
+          ],
           const SizedBox(height: 8),
           GestureDetector(
             onTap: onViewContact,
@@ -42,7 +70,11 @@ class OrderCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 const Text(
                   'Ver datos de contacto',
-                  style: TextStyle(color: primaryColor, fontWeight: FontWeight.w500, fontSize: 13),
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),

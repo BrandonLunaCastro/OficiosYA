@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/data/repositories/order_repository.dart';
+import 'package:oficios/data/repositories/user_profile_repository.dart';
+import 'package:oficios/models/order_request.dart';
 import 'package:oficios/models/provider.dart';
 import 'package:oficios/ui/screens/contact_success_screen.dart';
 import 'package:oficios/ui/widgets/primary_button.dart';
@@ -6,11 +9,15 @@ import 'package:oficios/ui/widgets/provider_start.dart';
 
 class ProviderProfileScreen extends StatelessWidget {
   final Provider provider;
+  final OrderRepository orderRepository;
+  final UserProfileRepository profileRepository;
   final int extraPhotosCount;
 
   const ProviderProfileScreen({
     super.key,
     required this.provider,
+    required this.orderRepository,
+    required this.profileRepository,
     this.extraPhotosCount = 12,
   });
 
@@ -165,16 +172,59 @@ class ProviderProfileScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20),
               child: PrimaryButton(
-              text: 'Solicitar presupuesto directo →',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ContactSuccessScreen(provider: provider),
-                  ),
-                );
-              },
-            ),
+                text: 'Solicitar presupuesto directo →',
+                onPressed: () async {
+                  final profile = profileRepository.getProfile();
+                  final now = DateTime.now();
+                  const months = [
+                    'ene',
+                    'feb',
+                    'mar',
+                    'abr',
+                    'may',
+                    'jun',
+                    'jul',
+                    'ago',
+                    'sep',
+                    'oct',
+                    'nov',
+                    'dic',
+                  ];
+                  final order = OrderRequest(
+                    service: provider.specialty,
+                    providerInitials: provider.initials,
+                    providerName: provider.name,
+                    date: '${now.day} ${months[now.month - 1]}',
+                    time:
+                        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}',
+                    phone: provider.phone,
+                    email: provider.email,
+                    clientName: profile.name,
+                    location: profile.location.isNotEmpty
+                        ? profile.location
+                        : provider.coverageZone,
+                  );
+
+                  try {
+                    await orderRepository.createOrder(order);
+                    if (!context.mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ContactSuccessScreen(provider: provider),
+                      ),
+                    );
+                  } catch (error) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('No se pudo registrar el pedido: $error'),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
           ],
         ),

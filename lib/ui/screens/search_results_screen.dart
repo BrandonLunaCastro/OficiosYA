@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/data/repositories/order_repository.dart';
 import 'package:oficios/data/repositories/provider_repository.dart';
+import 'package:oficios/data/repositories/user_profile_repository.dart';
 import 'package:oficios/models/provider.dart';
 import 'package:oficios/ui/screens/provider_profile_screen.dart';
 import 'package:oficios/ui/widgets/filter_chip_button.dart';
@@ -9,12 +11,16 @@ class SearchResultsScreen extends StatefulWidget {
   final String initialQuery;
   final String? initialCategory;
   final ProviderRepository providerRepository;
+  final OrderRepository orderRepository;
+  final UserProfileRepository profileRepository;
 
   const SearchResultsScreen({
     super.key,
     this.initialQuery = '',
     this.initialCategory,
     required this.providerRepository,
+    required this.orderRepository,
+    required this.profileRepository,
   });
 
   @override
@@ -198,6 +204,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                               builder: (context) =>
                                                   ProviderProfileScreen(
                                                     provider: provider,
+                                                    orderRepository:
+                                                        widget.orderRepository,
+                                                    profileRepository: widget
+                                                        .profileRepository,
                                                   ),
                                             ),
                                           );
