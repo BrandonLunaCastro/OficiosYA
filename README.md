@@ -43,6 +43,7 @@ lib/
 └── ui/
     ├── screens/              # pantallas; coordinan UI y repositorios
     └── widgets/              # componentes visuales reutilizables
+test/                         # pruebas de modelos y repositorios
 assets/
 ├── images/
 └── fonts/
@@ -54,17 +55,25 @@ assets/
 - Los contratos de `data/repositories/` describen las operaciones que necesita la aplicación; las implementaciones mock obtienen datos de `data/mocks/`.
 - Las pantallas reciben los contratos de repositorio y no conocen dónde ni cómo se almacenan los datos.
 - `routes/` conecta las pantallas con las implementaciones concretas. Para cambiar el origen de datos, se agrega una implementación del contrato y se selecciona allí.
-- `data/mocks/` contiene fixtures de desarrollo, no lógica de presentación ni acceso SQL. No se agrega una carpeta de utilidades hasta que haya funciones puras compartidas que la necesiten.
-- La aplicación todavía no usa SQLite ni una base de datos remota; la persistencia actual en memoria se pierde al reiniciar.
-- Las solicitudes de presupuesto se agregan a “Pedidos” durante la sesión actual. Como todavía no hay base de datos, se pierden al cerrar la aplicación.
+- `data/mocks/` contiene fixtures de desarrollo; no contiene lógica de presentación ni acceso a una base de datos.
+- Los prestadores y las páginas de onboarding se cargan desde repositorios mock. El perfil del cliente y los pedidos usan repositorios en memoria.
+- `InMemoryOrderRepository` es una instancia compartida entre el flujo de solicitud y la pantalla “Pedidos”: los pedidos creados aparecen allí durante la sesión y se muestran del más reciente al más antiguo.
+- La aplicación todavía no usa SQLite ni una base de datos remota. Los datos mantenidos en memoria se pierden al cerrar la aplicación.
 
 ## 5. Lógica de las funcionalidades
 
-> Completar a medida que se avance. Ejemplos:
+- **Navegación:** `AppRouter` registra las rutas principales e inyecta los repositorios en las pantallas.
+- **Inicio del cliente:** muestra categorías, prestadores destacados y accesos al buscador, pedidos y edición del perfil.
+- **Búsqueda:** permite filtrar prestadores por texto, categoría, valoración mínima y distancia máxima.
+- **Perfil y solicitud:** desde el perfil de un prestador se puede solicitar un presupuesto; la solicitud incluye los datos del servicio, contacto y ubicación del cliente.
+- **Pedidos:** la pantalla lista las solicitudes de la sesión y permite consultar la información de contacto del prestador.
+- **Pruebas:** hay pruebas de modelos y repositorios para onboarding, prestadores, perfil de usuario y pedidos.
 
-- **Navegación:** se usa `Navigator` con rutas con nombre; el flujo va de Bienvenida → Home → Resultados → Perfil.
-- **Selección de rol:** la pantalla de bienvenida define si el usuario sigue el flujo de cliente o de prestador.
-- **Componentes reutilizables:** `PrestadorCard`, `CategoriaChip`, `BotonPrimario`, etc., para no repetir código.
+Para ejecutar las pruebas:
+
+```bash
+flutter test
+```
 
 ## 6. Evidencia de ejecución
 
