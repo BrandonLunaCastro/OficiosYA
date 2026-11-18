@@ -57,6 +57,12 @@ assets/
 - `routes/` conecta las pantallas con las implementaciones concretas. Para cambiar el origen de datos, se agrega una implementación del contrato y se selecciona allí.
 - `data/mocks/` contiene fixtures de desarrollo; no contiene lógica de presentación ni acceso a una base de datos.
 - Los prestadores y las páginas de onboarding se cargan desde repositorios mock. El perfil del cliente y los pedidos usan repositorios en memoria.
+- El perfil propio del prestador se carga desde `MockProfessionalProfileRepository`; al terminar el formulario inicial se abre su pantalla “Mi perfil”.
+- Los servicios publicados del prestador se leen y modifican con `MockProviderServiceRepository`, compartido entre las pestañas de perfil y servicios durante la sesión.
+- La ubicación, cobertura y datos de contacto usan `MockProviderContactRepository` y se comparten con el perfil profesional durante la sesión.
+- El formulario inicial del prestador guarda el perfil y sus datos de contacto en los repositorios mock compartidos.
+- El perfil profesional permite editar la información del formulario de alta usando los mismos repositorios compartidos.
+- Las valoraciones del prestador se cargan desde `MockProviderReviewRepository`, incluyendo promedio, distribución y reseñas recientes.
 - `InMemoryOrderRepository` es una instancia compartida entre el flujo de solicitud y la pantalla “Pedidos”: los pedidos creados aparecen allí durante la sesión y se muestran del más reciente al más antiguo.
 - La aplicación todavía no usa SQLite ni una base de datos remota. Los datos mantenidos en memoria se pierden al cerrar la aplicación.
 
@@ -64,6 +70,10 @@ assets/
 
 - **Navegación:** `AppRouter` registra las rutas principales e inyecta los repositorios en las pantallas.
 - **Inicio del cliente:** muestra categorías, prestadores destacados y accesos al buscador, pedidos y edición del perfil.
+- **Perfil del prestador:** presenta sus datos, reputación, descripción y cantidad de servicios publicados mediante un repositorio mock.
+- **Servicios del prestador:** muestra los servicios publicados y permite agregarlos o editarlos; los cambios se mantienen en memoria durante la sesión.
+- **Ubicación y contacto del prestador:** permite consultar y editar ubicación, cobertura, teléfono, WhatsApp y correo electrónico.
+- **Reseñas del prestador:** presenta el promedio, distribución de puntuaciones y comentarios recibidos.
 - **Búsqueda:** permite filtrar prestadores por texto, categoría, valoración mínima y distancia máxima.
 - **Perfil y solicitud:** desde el perfil de un prestador se puede solicitar un presupuesto; la solicitud incluye los datos del servicio, contacto y ubicación del cliente.
 - **Pedidos:** la pantalla lista las solicitudes de la sesión y permite consultar la información de contacto del prestador.

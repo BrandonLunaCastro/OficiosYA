@@ -23,7 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (selectedRole == 1) {
       Navigator.pushReplacementNamed(context, AppRoutes.editProfileClient);
     } else if (selectedRole == 2) {
-      Navigator.pushReplacementNamed(context, AppRoutes.editProfileProfessional);
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.createProfileProfessional,
+      );
     }
   }
 
