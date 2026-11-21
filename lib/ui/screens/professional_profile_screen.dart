@@ -90,8 +90,10 @@ class _ProfessionalProfileScreenState extends State<ProfessionalProfileScreen> {
           if (index == 1) {
             _openServices();
           } else if (index == 2) {
-            _openContact();
+            Navigator.pushNamed(context, AppRoutes.providerOrders);
           } else if (index == 3) {
+            _openContact();
+          } else if (index == 4) {
             Navigator.pushNamed(context, AppRoutes.providerReviews);
           }
         },

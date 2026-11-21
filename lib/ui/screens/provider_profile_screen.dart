@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/data/repositories/order_repository.dart';
+import 'package:oficios/data/repositories/provider_review_repository.dart';
+import 'package:oficios/data/repositories/mock_provider_review_repository.dart';
 import 'package:oficios/data/repositories/user_profile_repository.dart';
 import 'package:oficios/models/order_request.dart';
 import 'package:oficios/models/provider.dart';
+import 'package:oficios/models/provider_review.dart';
 import 'package:oficios/ui/screens/contact_success_screen.dart';
 import 'package:oficios/ui/widgets/primary_button.dart';
 import 'package:oficios/ui/widgets/provider_start.dart';
 
-class ProviderProfileScreen extends StatelessWidget {
+class ProviderProfileScreen extends StatefulWidget {
   final Provider provider;
   final OrderRepository orderRepository;
   final UserProfileRepository profileRepository;
+  final ProviderReviewRepository reviewRepository;
   final int extraPhotosCount;
 
   const ProviderProfileScreen({
@@ -18,8 +22,68 @@ class ProviderProfileScreen extends StatelessWidget {
     required this.provider,
     required this.orderRepository,
     required this.profileRepository,
+    this.reviewRepository = const MockProviderReviewRepository(),
     this.extraPhotosCount = 12,
   });
+
+  @override
+  State<ProviderProfileScreen> createState() => _ProviderProfileScreenState();
+}
+
+class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
+  late double _averageRating;
+  late int _totalReviews;
+
+  Provider get provider => widget.provider;
+
+  @override
+  void initState() {
+    super.initState();
+    _averageRating = provider.rating;
+    _totalReviews = provider.reviews;
+  }
+
+  Future<void> _showRatingDialog() async {
+    final result = await showDialog<_RatingFormResult>(
+      context: context,
+      builder: (dialogContext) => _RatingDialog(providerName: provider.name),
+    );
+
+    if (result == null) return;
+
+    final profile = widget.profileRepository.getProfile();
+    final reviewerName = profile.name.trim().isEmpty
+        ? 'Cliente'
+        : profile.name.trim();
+
+    try {
+      final summary = await widget.reviewRepository.addReview(
+        ProviderReview(
+          id: 'resena-${DateTime.now().microsecondsSinceEpoch}',
+          reviewerName: reviewerName,
+          date: DateTime.now(),
+          rating: result.rating,
+          comment: result.comment.trim().isEmpty
+              ? 'Servicio calificado sin comentario.'
+              : result.comment.trim(),
+        ),
+      );
+
+      if (!mounted) return;
+      setState(() {
+        _averageRating = summary.averageRating;
+        _totalReviews = summary.totalReviews;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Calificación registrada')));
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo guardar la calificación: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +160,8 @@ class ProviderProfileScreen extends StatelessWidget {
                         ProviderStat(
                           icon: Icons.star,
                           iconColor: Colors.amber,
-                          value: provider.rating.toString(),
-                          label: '${provider.reviews} opiniones',
+                          value: _averageRating.toStringAsFixed(1),
+                          label: '$_totalReviews opiniones',
                         ),
                         ProviderStat(
                           icon: Icons.location_on_outlined,
@@ -112,6 +176,12 @@ class ProviderProfileScreen extends StatelessWidget {
                           label: 'Trabajos exitosos',
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton.icon(
+                      onPressed: _showRatingDialog,
+                      icon: const Icon(Icons.star_outline),
+                      label: const Text('Calificar prestador'),
                     ),
                     const SizedBox(height: 24),
                     const Divider(),
@@ -160,7 +230,7 @@ class ProviderProfileScreen extends StatelessWidget {
                           const SizedBox(width: 10),
                           _JobThumbnail(),
                           const SizedBox(width: 10),
-                          _MorePhotosThumbnail(count: extraPhotosCount),
+                          _MorePhotosThumbnail(count: widget.extraPhotosCount),
                         ],
                       ),
                     ),
@@ -174,7 +244,7 @@ class ProviderProfileScreen extends StatelessWidget {
               child: PrimaryButton(
                 text: 'Solicitar presupuesto directo →',
                 onPressed: () async {
-                  final profile = profileRepository.getProfile();
+                  final profile = widget.profileRepository.getProfile();
                   final now = DateTime.now();
                   const months = [
                     'ene',
@@ -200,13 +270,15 @@ class ProviderProfileScreen extends StatelessWidget {
                     phone: provider.phone,
                     email: provider.email,
                     clientName: profile.name,
+                    clientPhone: profile.phone,
+                    clientEmail: profile.email,
                     location: profile.location.isNotEmpty
                         ? profile.location
                         : provider.coverageZone,
                   );
 
                   try {
-                    await orderRepository.createOrder(order);
+                    await widget.orderRepository.createOrder(order);
                     if (!context.mounted) return;
                     Navigator.push(
                       context,
@@ -273,6 +345,166 @@ class _MorePhotosThumbnail extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _RatingFormResult {
+  const _RatingFormResult({required this.rating, required this.comment});
+
+  final int rating;
+  final String comment;
+}
+
+class _RatingDialog extends StatefulWidget {
+  const _RatingDialog({required this.providerName});
+
+  final String providerName;
+
+  @override
+  State<_RatingDialog> createState() => _RatingDialogState();
+}
+
+class _RatingDialogState extends State<_RatingDialog> {
+  int _selectedRating = 0;
+  late final TextEditingController _commentController;
+
+  @override
+  void initState() {
+    super.initState();
+    _commentController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      titlePadding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+      actionsPadding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+      title: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF4DC),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.star_rounded, color: Color(0xFFDAA520)),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Calificar prestador',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 420,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                widget.providerName,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '¿Cómo fue tu experiencia?',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.blueGrey, fontSize: 12),
+              ),
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFFBF2),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFF1E4C2)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(5, (index) {
+                    final star = index + 1;
+                    return IconButton(
+                      tooltip: '$star estrella${star == 1 ? '' : 's'}',
+                      onPressed: () => setState(() => _selectedRating = star),
+                      icon: Icon(
+                        star <= _selectedRating
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        color: const Color(0xFFDAA520),
+                        size: 36,
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _commentController,
+                maxLines: 4,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  labelText: 'Comentario',
+                  hintText: 'Contá cómo fue el servicio',
+                  prefixIcon: const Icon(Icons.rate_review_outlined, size: 20),
+                  filled: true,
+                  fillColor: const Color(0xFFF8F9FC),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFE3E7EF)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton(
+          onPressed: _selectedRating == 0
+              ? null
+              : () {
+                  Navigator.pop(
+                    context,
+                    _RatingFormResult(
+                      rating: _selectedRating,
+                      comment: _commentController.text,
+                    ),
+                  );
+                },
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: const Text('Guardar'),
+        ),
+      ],
     );
   }
 }

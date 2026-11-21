@@ -177,7 +177,7 @@ class _EditProfileProfessionalScreenState
             const _FormSectionTitle('Medios de contacto'),
             const SizedBox(height: 12),
             _labeledField(
-              label: 'Teléfono / WhatsApp',
+              label: 'Teléfono',
               hint: 'Ej. +54 9 261 444-5678',
               controller: _phoneController,
               key: const ValueKey('professional-phone'),
@@ -337,7 +337,6 @@ class _EditProfileProfessionalScreenState
         province: locationParts.skip(1).join(', '),
         coverageZone: _coverageController.text.trim(),
         phone: _phoneController.text.trim(),
-        whatsapp: _phoneController.text.trim(),
         email: _emailController.text.trim(),
       );
       final profile = currentProfile.copyWith(

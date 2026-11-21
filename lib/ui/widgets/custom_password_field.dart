@@ -32,6 +32,7 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
           ),
           const SizedBox(height: 10),
           TextField(
+            controller: widget.controller,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
               hintText: widget.hint,

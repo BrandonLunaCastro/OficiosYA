@@ -75,7 +75,7 @@ class _ProviderContactScreenState extends State<ProviderContactScreen> {
         ),
       ),
       bottomNavigationBar: ProviderBottomNav(
-        currentIndex: 2,
+        currentIndex: 3,
         onTap: _handleNavigation,
       ),
     );
@@ -85,8 +85,9 @@ class _ProviderContactScreenState extends State<ProviderContactScreen> {
     final route = switch (index) {
       0 => AppRoutes.professionalProfile,
       1 => AppRoutes.providerServices,
-      2 => null,
-      3 => AppRoutes.providerReviews,
+      2 => AppRoutes.providerOrders,
+      3 => null,
+      4 => AppRoutes.providerReviews,
       _ => null,
     };
     if (route != null) {
@@ -111,6 +112,9 @@ class _ProviderContactScreenState extends State<ProviderContactScreen> {
       setState(() {
         _contactFuture = widget.contactRepository.getContactInfo();
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Información actualizada correctamente.')),
+      );
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -186,8 +190,6 @@ class _ContactContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 _ContactValue(label: 'Teléfono', value: contactInfo.phone),
-                const SizedBox(height: 8),
-                _ContactValue(label: 'WhatsApp', value: contactInfo.whatsapp),
                 const SizedBox(height: 8),
                 _ContactValue(
                   label: 'Correo electrónico',
@@ -314,7 +316,6 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
   late final TextEditingController _provinceController;
   late final TextEditingController _coverageController;
   late final TextEditingController _phoneController;
-  late final TextEditingController _whatsappController;
   late final TextEditingController _emailController;
 
   @override
@@ -328,9 +329,6 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
       text: widget.contactInfo.coverageZone,
     );
     _phoneController = TextEditingController(text: widget.contactInfo.phone);
-    _whatsappController = TextEditingController(
-      text: widget.contactInfo.whatsapp,
-    );
     _emailController = TextEditingController(text: widget.contactInfo.email);
   }
 
@@ -340,7 +338,6 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
     _provinceController.dispose();
     _coverageController.dispose();
     _phoneController.dispose();
-    _whatsappController.dispose();
     _emailController.dispose();
     super.dispose();
   }
@@ -348,42 +345,77 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
   @override
   Widget build(BuildContext context) {
     final isLocation = widget.section == _ContactEditSection.location;
+    final title = isLocation
+        ? 'Editar ubicación y cobertura'
+        : 'Editar medios de contacto';
+    final icon = isLocation
+        ? Icons.location_on_outlined
+        : Icons.contact_phone_outlined;
 
     return AlertDialog(
-      title: Text(
-        isLocation
-            ? 'Editar ubicación y cobertura'
-            : 'Editar medios de contacto',
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      titlePadding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+      actionsPadding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+      title: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF0FF),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: const Color(0xFF2B66DF)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
       ),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: isLocation
-                ? [
-                    _field(_cityController, 'Ciudad'),
-                    _field(_provinceController, 'Provincia'),
-                    _field(_coverageController, 'Zona de cobertura'),
-                  ]
-                : [
-                    _field(
-                      _phoneController,
-                      'Teléfono',
-                      keyboardType: TextInputType.phone,
-                    ),
-                    _field(
-                      _whatsappController,
-                      'WhatsApp',
-                      keyboardType: TextInputType.phone,
-                    ),
-                    _field(
-                      _emailController,
-                      'Correo electrónico',
-                      keyboardType: TextInputType.emailAddress,
-                      validateEmail: true,
-                    ),
-                  ],
+      content: SizedBox(
+        width: 420,
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: isLocation
+                  ? [
+                      _field(_cityController, 'Ciudad', hint: 'Ej. Mendoza'),
+                      _field(
+                        _provinceController,
+                        'Provincia',
+                        hint: 'Ej. Mendoza',
+                      ),
+                      _field(
+                        _coverageController,
+                        'Zona de cobertura',
+                        hint: 'Ej. Capital y alrededores',
+                      ),
+                    ]
+                  : [
+                      _field(
+                        _phoneController,
+                        'Teléfono',
+                        hint: '+54 9 261 123-4567',
+                        keyboardType: TextInputType.phone,
+                        validatePhone: true,
+                      ),
+                      _field(
+                        _emailController,
+                        'Correo electrónico',
+                        hint: 'nombre@correo.com',
+                        keyboardType: TextInputType.emailAddress,
+                        validateEmail: true,
+                      ),
+                    ],
+            ),
           ),
         ),
       ),
@@ -392,7 +424,15 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancelar'),
         ),
-        FilledButton(onPressed: _save, child: const Text('Guardar cambios')),
+        FilledButton(
+          onPressed: _save,
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: const Text('Guardar cambios'),
+        ),
       ],
     );
   }
@@ -402,20 +442,40 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
     String label, {
     TextInputType? keyboardType,
     bool validateEmail = false,
+    bool validatePhone = false,
+    String? hint,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(labelText: label),
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          filled: true,
+          fillColor: const Color(0xFFF8F9FC),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFE3E7EF)),
+          ),
+        ),
         keyboardType: keyboardType,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
             return 'Este campo es obligatorio.';
           }
+          final text = value.trim();
           if (validateEmail &&
-              (!value.contains('@') || !value.split('@').last.contains('.'))) {
+              (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(text))) {
             return 'Ingresá un correo válido.';
+          }
+          if (validatePhone) {
+            final digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+            if (digits.length < 8) {
+              return 'Ingresá un teléfono válido.';
+            }
           }
           return null;
         },
@@ -433,7 +493,6 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
           )
         : widget.contactInfo.copyWith(
             phone: _phoneController.text,
-            whatsapp: _whatsappController.text,
             email: _emailController.text,
           );
     Navigator.pop(context, updatedInfo);

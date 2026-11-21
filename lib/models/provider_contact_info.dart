@@ -3,7 +3,6 @@ class ProviderContactInfo {
   final String province;
   final String coverageZone;
   final String phone;
-  final String whatsapp;
   final String email;
 
   const ProviderContactInfo({
@@ -11,7 +10,6 @@ class ProviderContactInfo {
     required this.province,
     required this.coverageZone,
     required this.phone,
-    required this.whatsapp,
     required this.email,
   });
 
@@ -20,7 +18,6 @@ class ProviderContactInfo {
     String? province,
     String? coverageZone,
     String? phone,
-    String? whatsapp,
     String? email,
   }) {
     return ProviderContactInfo(
@@ -28,7 +25,6 @@ class ProviderContactInfo {
       province: province ?? this.province,
       coverageZone: coverageZone ?? this.coverageZone,
       phone: phone ?? this.phone,
-      whatsapp: whatsapp ?? this.whatsapp,
       email: email ?? this.email,
     );
   }

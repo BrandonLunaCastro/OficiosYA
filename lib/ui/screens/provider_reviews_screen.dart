@@ -70,7 +70,7 @@ class _ProviderReviewsScreenState extends State<ProviderReviewsScreen> {
         ),
       ),
       bottomNavigationBar: ProviderBottomNav(
-        currentIndex: 3,
+        currentIndex: 4,
         onTap: _handleNavigation,
       ),
     );
@@ -80,7 +80,8 @@ class _ProviderReviewsScreenState extends State<ProviderReviewsScreen> {
     final route = switch (index) {
       0 => AppRoutes.professionalProfile,
       1 => AppRoutes.providerServices,
-      2 => AppRoutes.providerContact,
+      2 => AppRoutes.providerOrders,
+      3 => AppRoutes.providerContact,
       _ => null,
     };
     if (route != null) {

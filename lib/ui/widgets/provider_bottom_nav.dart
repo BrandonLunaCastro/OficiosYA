@@ -30,6 +30,10 @@ class ProviderBottomNav extends StatelessWidget {
           label: 'Servicios',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.assignment_outlined),
+          label: 'Pedidos',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.location_on_outlined),
           label: 'Contacto',
         ),

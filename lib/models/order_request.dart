@@ -7,6 +7,8 @@ class OrderRequest {
   final String phone;
   final String email;
   final String clientName;
+  final String clientPhone;
+  final String clientEmail;
   final String location;
   final String status;
 
@@ -19,6 +21,8 @@ class OrderRequest {
     required this.phone,
     required this.email,
     this.clientName = '',
+    this.clientPhone = '',
+    this.clientEmail = '',
     this.location = 'Mendoza',
     this.status = 'Pendiente',
   });

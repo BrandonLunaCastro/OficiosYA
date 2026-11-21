@@ -8,6 +8,7 @@ class AppRoutes {
   static const String professionalProfile = 'professionalProfile';
   static const String providerServices = 'providerServices';
   static const String providerContact = 'providerContact';
+  static const String providerOrders = 'providerOrders';
   static const String providerReviews = 'providerReviews';
   static const String clientHome = 'clientHome';
   static const String contactSuccess = 'contactSuccess';

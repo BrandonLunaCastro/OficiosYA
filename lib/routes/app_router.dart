@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oficios/data/repositories/in_memory_user_profile_repository.dart';
 import 'package:oficios/data/repositories/in_memory_order_repository.dart';
 import 'package:oficios/data/repositories/mock_onboarding_repository.dart';
+import 'package:oficios/data/repositories/mock_auth_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_contact_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_service_repository.dart';
@@ -17,6 +18,7 @@ import 'package:oficios/ui/screens/orders_screen.dart';
 import 'package:oficios/ui/screens/professional_profile_screen.dart';
 import 'package:oficios/ui/screens/provider_services_screen.dart';
 import 'package:oficios/ui/screens/provider_contact_screen.dart';
+import 'package:oficios/ui/screens/provider_orders_screen.dart';
 import 'package:oficios/ui/screens/provider_reviews_screen.dart';
 import 'package:oficios/ui/screens/register_screen.dart';
 import 'package:oficios/ui/screens/splash_screen.dart';
@@ -35,7 +37,12 @@ class AppRouter {
     AppRoutes.onboarding: (context) => const OnboardingScreen(
       onboardingRepository: MockOnboardingRepository(),
     ),
-    AppRoutes.login: (context) => const Login(),
+    AppRoutes.login: (context) => Login(
+      authRepository: const MockAuthRepository(),
+      clientProfileRepository: InMemoryUserProfileRepository.instance,
+      professionalProfileRepository: providerProfileRepository,
+      providerContactRepository: providerContactRepository,
+    ),
     AppRoutes.register: (context) => const Register(),
     AppRoutes.chooseRole: (context) => const HomeScreen(),
     AppRoutes.editProfileClient: (context) => EditProfileClientScreen(
@@ -61,6 +68,10 @@ class AppRouter {
         ProviderServicesScreen(serviceRepository: providerServiceRepository),
     AppRoutes.providerContact: (context) =>
         ProviderContactScreen(contactRepository: providerContactRepository),
+    AppRoutes.providerOrders: (context) => ProviderOrdersScreen(
+      orderRepository: InMemoryOrderRepository.instance,
+      profileRepository: providerProfileRepository,
+    ),
     AppRoutes.providerReviews: (context) =>
         const ProviderReviewsScreen(reviewRepository: providerReviewRepository),
     AppRoutes.clientHome: (context) => ClientHomeScreen(

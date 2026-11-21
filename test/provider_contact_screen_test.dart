@@ -32,7 +32,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mendoza Capital, Mendoza'), findsOneWidget);
-    expect(find.text('+54 9 261 444-5678'), findsNWidgets(2));
+    expect(find.text('+54 9 261 444-5678'), findsOneWidget);
     expect(find.text('carlos.rod@outlook.com'), findsOneWidget);
 
     await tester.tap(find.text('Editar ubicación y cobertura'));
@@ -51,10 +51,6 @@ void main() {
     );
     await tester.enterText(
       find.byType(TextFormField).at(1),
-      '+54 9 261 555-1234',
-    );
-    await tester.enterText(
-      find.byType(TextFormField).at(2),
       'prestador@correo.com',
     );
     await tester.tap(find.text('Guardar cambios'));

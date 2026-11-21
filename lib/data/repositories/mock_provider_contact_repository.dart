@@ -17,7 +17,6 @@ class MockProviderContactRepository implements ProviderContactRepository {
       contactInfo.province,
       contactInfo.coverageZone,
       contactInfo.phone,
-      contactInfo.whatsapp,
       contactInfo.email,
     ];
     if (values.any((value) => value.trim().isEmpty)) {
@@ -29,7 +28,6 @@ class MockProviderContactRepository implements ProviderContactRepository {
       province: contactInfo.province.trim(),
       coverageZone: contactInfo.coverageZone.trim(),
       phone: contactInfo.phone.trim(),
-      whatsapp: contactInfo.whatsapp.trim(),
       email: contactInfo.email.trim(),
     );
   }

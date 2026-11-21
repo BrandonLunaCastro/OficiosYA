@@ -81,8 +81,10 @@ class _ProviderServicesScreenState extends State<ProviderServicesScreen> {
         Navigator.pushNamed(context, AppRoutes.professionalProfile);
       }
     } else if (index == 2) {
-      Navigator.pushNamed(context, AppRoutes.providerContact);
+      Navigator.pushNamed(context, AppRoutes.providerOrders);
     } else if (index == 3) {
+      Navigator.pushNamed(context, AppRoutes.providerContact);
+    } else if (index == 4) {
       Navigator.pushNamed(context, AppRoutes.providerReviews);
     } else if (index != 1) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -115,6 +117,15 @@ class _ProviderServicesScreenState extends State<ProviderServicesScreen> {
         );
       }
       if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            service == null
+                ? 'Servicio agregado correctamente.'
+                : 'Servicio actualizado correctamente.',
+          ),
+        ),
+      );
       setState(() {
         _servicesFuture = widget.serviceRepository.getServices();
       });
@@ -285,29 +296,72 @@ class _ServiceEditorDialogState extends State<_ServiceEditorDialog> {
     final isEditing = widget.service != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Editar servicio' : 'Agregar servicio'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre del servicio',
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      titlePadding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+      actionsPadding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+      title: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF0FF),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.handyman_outlined,
+              color: Color(0xFF2B66DF),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              isEditing ? 'Editar servicio' : 'Agregar servicio',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 420,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Completá la información que verán tus clientes.',
+                  style: TextStyle(color: Colors.blueGrey, fontSize: 12),
+                ),
               ),
-              textCapitalization: TextCapitalization.sentences,
-              validator: _requiredValidator,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Descripción'),
-              textCapitalization: TextCapitalization.sentences,
-              maxLines: 3,
-              validator: _requiredValidator,
-            ),
-          ],
+              const SizedBox(height: 14),
+              TextFormField(
+                controller: _titleController,
+                textInputAction: TextInputAction.next,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: _dialogInputDecoration(
+                  label: 'Nombre del servicio',
+                  hint: 'Ej. Reparación de cañerías',
+                ),
+                validator: _requiredValidator,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: _dialogInputDecoration(
+                  label: 'Descripción',
+                  hint: 'Indicá qué incluye el servicio',
+                ),
+                textCapitalization: TextCapitalization.sentences,
+                maxLines: 4,
+                validator: _requiredValidator,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -317,6 +371,11 @@ class _ServiceEditorDialogState extends State<_ServiceEditorDialog> {
         ),
         FilledButton(
           onPressed: _save,
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           child: Text(isEditing ? 'Guardar cambios' : 'Agregar'),
         ),
       ],
@@ -328,6 +387,23 @@ class _ServiceEditorDialogState extends State<_ServiceEditorDialog> {
       return 'Este campo es obligatorio.';
     }
     return null;
+  }
+
+  InputDecoration _dialogInputDecoration({
+    required String label,
+    required String hint,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      filled: true,
+      fillColor: const Color(0xFFF8F9FC),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFE3E7EF)),
+      ),
+    );
   }
 
   void _save() {

@@ -61,7 +61,7 @@ void main() {
     await tester.tap(find.text('Contacto'));
     await tester.pumpAndSettle();
 
-    expect(find.text('+54 9 261 555-1234'), findsNWidgets(2));
+    expect(find.text('+54 9 261 555-1234'), findsOneWidget);
     expect(find.text('maria@correo.com'), findsOneWidget);
   });
 }
