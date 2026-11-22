@@ -1,6 +1,8 @@
 import 'package:oficios/models/professional_profile.dart';
+import 'package:oficios/data/mocks/mock_provider_reviews.dart';
 
-const mockProfessionalProfile = ProfessionalProfile(
+final mockProfessionalProfile = ProfessionalProfile(
+  id: 'prestador-plomeria-01',
   initials: 'CR',
   name: 'Carlos Rodriguez',
   specialty: 'Plomería y Gasista',
@@ -9,4 +11,5 @@ const mockProfessionalProfile = ProfessionalProfile(
   reviews: 45,
   about: 'Más de 10 años de experiencia en plomería y gas. Soluciones para filtraciones, instalaciones y urgencias del hogar.',
   publishedServices: 3,
+  initialReviewSummary: mockProviderReviewSummary,
 );

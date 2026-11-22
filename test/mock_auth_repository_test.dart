@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:oficios/models/auth_account.dart';
 import 'package:oficios/data/repositories/mock_auth_repository.dart';
 
 void main() {
@@ -10,7 +11,7 @@ void main() {
       password: 'Cliente123',
     );
 
-    expect(account.role, MockAccountRole.client);
+    expect(account.role, AccountRole.client);
     expect(account.clientProfile?.name, 'Lucas Gómez');
     expect(account.clientProfile?.phone, '+54 9 261 555-1234');
   });
@@ -21,7 +22,7 @@ void main() {
       password: 'Prestador123',
     );
 
-    expect(account.role, MockAccountRole.professional);
+    expect(account.role, AccountRole.professional);
     expect(account.professionalProfile?.name, 'Carlos Rodriguez');
     expect(account.providerContactInfo?.email, 'carlos.rod@outlook.com');
   });

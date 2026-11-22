@@ -33,14 +33,45 @@ class ProviderProfileScreen extends StatefulWidget {
 class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   late double _averageRating;
   late int _totalReviews;
+  late ProviderReviewSummary _initialReviewSummary;
 
   Provider get provider => widget.provider;
+  String get _providerId =>
+      provider.id.trim().isEmpty ? provider.name.trim() : provider.id;
 
   @override
   void initState() {
     super.initState();
-    _averageRating = provider.rating;
-    _totalReviews = provider.reviews;
+    _initialReviewSummary =
+        provider.initialReviewSummary ??
+        ProviderReviewSummary.fromProviderStats(
+          averageRating: provider.rating,
+          totalReviews: provider.reviews,
+        );
+    _averageRating = _initialReviewSummary.averageRating;
+    _totalReviews = _initialReviewSummary.totalReviews;
+    _loadSavedReviews();
+  }
+
+  Future<void> _loadSavedReviews() async {
+    try {
+      final summary = await widget.reviewRepository.getReviews(
+        providerId: _providerId,
+        initialSummary: _initialReviewSummary,
+      );
+      if (!mounted) return;
+      setState(() {
+        _averageRating = summary.averageRating;
+        _totalReviews = summary.totalReviews;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudieron cargar las calificaciones: $error'),
+        ),
+      );
+    }
   }
 
   Future<void> _showRatingDialog() async {
@@ -58,7 +89,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
 
     try {
       final summary = await widget.reviewRepository.addReview(
-        ProviderReview(
+        providerId: _providerId,
+        initialSummary: _initialReviewSummary,
+        review: ProviderReview(
           id: 'resena-${DateTime.now().microsecondsSinceEpoch}',
           reviewerName: reviewerName,
           date: DateTime.now(),
@@ -83,6 +116,14 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
         SnackBar(content: Text('No se pudo guardar la calificación: $error')),
       );
     }
+  }
+
+  String _formatRating(double rating) {
+    final oneDecimal = rating.toStringAsFixed(1);
+    if ((double.parse(oneDecimal) - rating).abs() < 0.0005) {
+      return oneDecimal;
+    }
+    return rating.toStringAsFixed(3);
   }
 
   @override
@@ -160,7 +201,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                         ProviderStat(
                           icon: Icons.star,
                           iconColor: Colors.amber,
-                          value: _averageRating.toStringAsFixed(1),
+                          value: _formatRating(_averageRating),
                           label: '$_totalReviews opiniones',
                         ),
                         ProviderStat(

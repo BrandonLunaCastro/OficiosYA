@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/data/repositories/order_repository.dart';
 import 'package:oficios/data/repositories/provider_repository.dart';
+import 'package:oficios/data/repositories/provider_review_repository.dart';
 import 'package:oficios/data/repositories/user_profile_repository.dart';
 import 'package:oficios/models/provider.dart';
 import 'package:oficios/ui/screens/provider_profile_screen.dart';
@@ -12,6 +13,7 @@ class SearchResultsScreen extends StatefulWidget {
   final String? initialCategory;
   final ProviderRepository providerRepository;
   final OrderRepository orderRepository;
+  final ProviderReviewRepository reviewRepository;
   final UserProfileRepository profileRepository;
 
   const SearchResultsScreen({
@@ -20,6 +22,7 @@ class SearchResultsScreen extends StatefulWidget {
     this.initialCategory,
     required this.providerRepository,
     required this.orderRepository,
+    required this.reviewRepository,
     required this.profileRepository,
   });
 
@@ -206,6 +209,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                     provider: provider,
                                                     orderRepository:
                                                         widget.orderRepository,
+                                                    reviewRepository:
+                                                        widget.reviewRepository,
                                                     profileRepository: widget
                                                         .profileRepository,
                                                   ),

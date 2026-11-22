@@ -1,3 +1,5 @@
+import 'package:oficios/models/provider_review.dart';
+
 class Provider {
   final String id;
   final String initials;
@@ -13,6 +15,7 @@ class Provider {
   final String email;
   final String coverageZone;
   final String availabilityStatus;
+  final ProviderReviewSummary? initialReviewSummary;
 
   const Provider({
     this.id = '',
@@ -29,5 +32,6 @@ class Provider {
     this.email = '',
     this.coverageZone = 'Mendoza Capital',
     this.availabilityStatus = 'Disponible esta semana',
+    this.initialReviewSummary,
   });
 }

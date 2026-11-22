@@ -1,44 +1,27 @@
 import 'package:oficios/data/mocks/mock_provider_contact_info.dart';
 import 'package:oficios/data/mocks/mock_professional_profile.dart';
-import 'package:oficios/models/professional_profile.dart';
-import 'package:oficios/models/provider_contact_info.dart';
+import 'package:oficios/data/repositories/auth_repository.dart';
+import 'package:oficios/models/auth_account.dart';
 import 'package:oficios/models/user_profile.dart';
 
-enum MockAccountRole { client, professional }
-
-class MockAccount {
-  const MockAccount({
-    required this.email,
-    required this.role,
-    this.clientProfile,
-    this.professionalProfile,
-    this.providerContactInfo,
-  });
-
-  final String email;
-  final MockAccountRole role;
-  final UserProfile? clientProfile;
-  final ProfessionalProfile? professionalProfile;
-  final ProviderContactInfo? providerContactInfo;
-}
-
-class MockAuthException implements Exception {
-  const MockAuthException();
+class MockAuthException extends AuthException {
+  const MockAuthException()
+    : super('El correo o la contraseña no son correctos.');
 
   @override
-  String toString() => 'El correo o la contraseña no son correctos.';
+  String toString() => message;
 }
 
-class MockAuthRepository {
+class MockAuthRepository implements AuthRepository {
   const MockAuthRepository();
 
-  static const _accounts = [
+  static final _accounts = [
     _MockCredential(
       email: 'cliente@oficiosya.com',
       password: 'Cliente123',
-      account: MockAccount(
+      account: AuthAccount(
         email: 'cliente@oficiosya.com',
-        role: MockAccountRole.client,
+        role: AccountRole.client,
         clientProfile: UserProfile(
           id: 'demo-client',
           name: 'Lucas Gómez',
@@ -51,16 +34,22 @@ class MockAuthRepository {
     _MockCredential(
       email: 'prestador@oficiosya.com',
       password: 'Prestador123',
-      account: MockAccount(
+      account: AuthAccount(
         email: 'prestador@oficiosya.com',
-        role: MockAccountRole.professional,
+        role: AccountRole.professional,
         professionalProfile: mockProfessionalProfile,
         providerContactInfo: mockProviderContactInfo,
       ),
     ),
   ];
 
-  Future<MockAccount> signIn({
+  bool isReservedEmail(String email) {
+    final normalizedEmail = email.trim().toLowerCase();
+    return _accounts.any((credential) => credential.email == normalizedEmail);
+  }
+
+  @override
+  Future<AuthAccount> signIn({
     required String email,
     required String password,
   }) async {
@@ -84,5 +73,5 @@ class _MockCredential {
 
   final String email;
   final String password;
-  final MockAccount account;
+  final AuthAccount account;
 }

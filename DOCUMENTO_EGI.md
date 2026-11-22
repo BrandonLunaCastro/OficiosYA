@@ -329,7 +329,7 @@ Las operaciones de repositorio utilizan `Future` y `async`:
 
 Las pantallas usan `FutureBuilder` para mostrar carga, datos o errores. Por ejemplo, [search_results_screen.dart](lib/ui/screens/search_results_screen.dart) mantiene un `_resultsFuture`, lo reemplaza al cambiar filtros y renderiza el resultado segun `snapshot`.
 
-La ventaja es que las operaciones pueden representar servicios futuros sin bloquear la interfaz. La limitacion es que los repositorios actuales resuelven inmediatamente, por lo que no se simula latencia real ni recuperacion ante fallos de red. La vista de pedidos del prestador filtra las solicitudes por el nombre del perfil activo.
+La ventaja es que las operaciones pueden representar servicios futuros sin bloquear la interfaz. La limitacion es que los repositorios actuales resuelven inmediatamente, por lo que no se simula latencia real ni recuperacion ante fallos de red. La vista de pedidos del prestador filtra las solicitudes por el nombre del perfil acti
 
 ## Persistencia
 

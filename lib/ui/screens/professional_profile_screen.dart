@@ -5,6 +5,7 @@ import 'package:oficios/data/repositories/provider_service_repository.dart';
 import 'package:oficios/models/professional_profile.dart';
 import 'package:oficios/models/provider_contact_info.dart';
 import 'package:oficios/routes/app_routes.dart';
+import 'package:oficios/ui/widgets/logout_button.dart';
 import 'package:oficios/ui/widgets/provider_bottom_nav.dart';
 
 class ProfessionalProfileScreen extends StatefulWidget {
@@ -56,9 +57,15 @@ class _ProfessionalProfileScreenState extends State<ProfessionalProfileScreen> {
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               color: Colors.white,
-              child: const Text(
-                'Mi perfil',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Mi perfil',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  LogoutButton(),
+                ],
               ),
             ),
             Expanded(

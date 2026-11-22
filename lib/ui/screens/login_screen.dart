@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:oficios/data/repositories/mock_auth_repository.dart';
+import 'package:oficios/data/repositories/auth_repository.dart';
 import 'package:oficios/data/repositories/professional_profile_repository.dart';
 import 'package:oficios/data/repositories/provider_contact_repository.dart';
 import 'package:oficios/data/repositories/user_profile_repository.dart';
+import 'package:oficios/models/auth_account.dart';
 import 'package:oficios/routes/app_routes.dart';
 import 'package:oficios/ui/widgets/custom_password_field.dart';
 import 'package:oficios/ui/widgets/custom_text_field.dart';
@@ -18,7 +19,7 @@ class Login extends StatefulWidget {
     required this.providerContactRepository,
   });
 
-  final MockAuthRepository authRepository;
+  final AuthRepository authRepository;
   final UserProfileRepository clientProfileRepository;
   final ProfessionalProfileRepository professionalProfileRepository;
   final ProviderContactRepository providerContactRepository;
@@ -65,35 +66,24 @@ class _LoginState extends State<Login> {
 
       late final String destination;
       switch (account.role) {
-        case MockAccountRole.client:
-          if (widget.clientProfileRepository.getProfile().id.isEmpty) {
-            widget.clientProfileRepository.saveProfile(account.clientProfile!);
-          }
+        case AccountRole.client:
+          widget.clientProfileRepository.saveProfile(account.clientProfile!);
           destination = AppRoutes.clientHome;
           break;
-        case MockAccountRole.professional:
-          final currentProfile = await widget.professionalProfileRepository
-              .getProfile();
-          if (currentProfile.name.trim().isEmpty) {
-            await widget.professionalProfileRepository.updateProfile(
-              account.professionalProfile!,
-            );
-          }
-          final currentContact = await widget.providerContactRepository
-              .getContactInfo();
-          if (currentContact.phone.trim().isEmpty ||
-              currentContact.email.trim().isEmpty) {
-            await widget.providerContactRepository.updateContactInfo(
-              account.providerContactInfo!,
-            );
-          }
+        case AccountRole.professional:
+          await widget.professionalProfileRepository.updateProfile(
+            account.professionalProfile!,
+          );
+          await widget.providerContactRepository.updateContactInfo(
+            account.providerContactInfo!,
+          );
           destination = AppRoutes.professionalProfile;
           break;
       }
 
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, destination);
-    } on MockAuthException catch (error) {
+    } on AuthException catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(error.toString())));
@@ -177,9 +167,7 @@ class _LoginState extends State<Login> {
                   children: [
                     const Text("¿No tienes una cuenta?"),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.register);
-                      },
+                      onPressed: _openRegistration,
                       child: const Text(
                         'Regístrate',
                         style: TextStyle(
@@ -203,6 +191,19 @@ class _LoginState extends State<Login> {
       _emailController.text = email;
       _passwordController.text = password;
     });
+  }
+
+  Future<void> _openRegistration() async {
+    final result = await Navigator.pushNamed(context, AppRoutes.register);
+    if (!mounted || result is! String) return;
+
+    _emailController.text = result;
+    _passwordController.clear();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Cuenta creada. Iniciá sesión con tu contraseña.'),
+      ),
+    );
   }
 }
 

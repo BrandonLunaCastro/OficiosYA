@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/data/repositories/sqlite_order_repository.dart';
 import 'package:oficios/data/repositories/in_memory_user_profile_repository.dart';
-import 'package:oficios/data/repositories/in_memory_order_repository.dart';
 import 'package:oficios/data/repositories/mock_onboarding_repository.dart';
-import 'package:oficios/data/repositories/mock_auth_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_contact_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_service_repository.dart';
 import 'package:oficios/data/repositories/mock_professional_profile_repository.dart';
-import 'package:oficios/data/repositories/mock_provider_review_repository.dart';
+import 'package:oficios/data/repositories/sqlite_auth_repository.dart';
+import 'package:oficios/data/repositories/sqlite_provider_review_repository.dart';
 import 'package:oficios/ui/screens/client_home_screen.dart';
 import 'package:oficios/ui/screens/edit_profile_client_screen.dart';
 import 'package:oficios/ui/screens/edit_profile_professional_screen.dart';
@@ -30,7 +30,9 @@ class AppRouter {
   static final providerProfileRepository = MockProfessionalProfileRepository();
   static final providerServiceRepository = MockProviderServiceRepository();
   static final providerContactRepository = MockProviderContactRepository();
-  static const providerReviewRepository = MockProviderReviewRepository();
+  static final authRepository = SqliteAuthRepository.instance;
+  static final orderRepository = SqliteOrderRepository();
+  static final providerReviewRepository = SqliteProviderReviewRepository();
 
   static final Map<String, WidgetBuilder> routes = {
     AppRoutes.splash: (context) => const SplashScreen(),
@@ -38,12 +40,13 @@ class AppRouter {
       onboardingRepository: MockOnboardingRepository(),
     ),
     AppRoutes.login: (context) => Login(
-      authRepository: const MockAuthRepository(),
+      authRepository: authRepository,
       clientProfileRepository: InMemoryUserProfileRepository.instance,
       professionalProfileRepository: providerProfileRepository,
       providerContactRepository: providerContactRepository,
     ),
-    AppRoutes.register: (context) => const Register(),
+    AppRoutes.register: (context) =>
+        Register(registrationRepository: authRepository),
     AppRoutes.chooseRole: (context) => const HomeScreen(),
     AppRoutes.editProfileClient: (context) => EditProfileClientScreen(
       profileRepository: InMemoryUserProfileRepository.instance,
@@ -69,17 +72,20 @@ class AppRouter {
     AppRoutes.providerContact: (context) =>
         ProviderContactScreen(contactRepository: providerContactRepository),
     AppRoutes.providerOrders: (context) => ProviderOrdersScreen(
-      orderRepository: InMemoryOrderRepository.instance,
+      orderRepository: orderRepository,
       profileRepository: providerProfileRepository,
     ),
-    AppRoutes.providerReviews: (context) =>
-        const ProviderReviewsScreen(reviewRepository: providerReviewRepository),
+    AppRoutes.providerReviews: (context) => ProviderReviewsScreen(
+      reviewRepository: providerReviewRepository,
+      profileRepository: providerProfileRepository,
+    ),
     AppRoutes.clientHome: (context) => ClientHomeScreen(
       profileRepository: InMemoryUserProfileRepository.instance,
       providerRepository: const MockProviderRepository(),
-      orderRepository: InMemoryOrderRepository.instance,
+      orderRepository: orderRepository,
+      reviewRepository: providerReviewRepository,
     ),
     AppRoutes.orders: (context) =>
-        OrdersScreen(orderRepository: InMemoryOrderRepository.instance),
+        OrdersScreen(orderRepository: orderRepository),
   };
 }

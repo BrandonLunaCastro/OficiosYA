@@ -1,4 +1,3 @@
-import 'package:oficios/data/mocks/mock_provider_reviews.dart';
 import 'package:oficios/data/repositories/provider_review_repository.dart';
 import 'package:oficios/models/provider_review.dart';
 
@@ -7,32 +6,34 @@ class MockProviderReviewRepository implements ProviderReviewRepository {
 
   static final instance = MockProviderReviewRepository();
 
-  static ProviderReviewSummary _summary = mockProviderReviewSummary;
+  static final Map<String, List<ProviderReview>> _reviewsByProvider = {};
 
   @override
-  Future<ProviderReviewSummary> getReviews() async => _summary;
+  Future<ProviderReviewSummary> getReviews({
+    required String providerId,
+    required ProviderReviewSummary initialSummary,
+  }) async {
+    return initialSummary.withAdditionalReviews(
+      List<ProviderReview>.unmodifiable(
+        _reviewsByProvider[providerId] ?? const [],
+      ),
+    );
+  }
 
   @override
-  Future<ProviderReviewSummary> addReview(ProviderReview review) async {
+  Future<ProviderReviewSummary> addReview({
+    required String providerId,
+    required ProviderReview review,
+    required ProviderReviewSummary initialSummary,
+  }) async {
+    if (providerId.trim().isEmpty) {
+      throw ArgumentError('El prestador debe tener un identificador.');
+    }
     if (review.rating < 1 || review.rating > 5) {
       throw ArgumentError('La calificación debe estar entre 1 y 5.');
     }
 
-    final reviews = [review, ..._summary.reviews];
-    final ratingCounts = Map<int, int>.from(_summary.ratingCounts);
-    ratingCounts[review.rating] = (ratingCounts[review.rating] ?? 0) + 1;
-
-    final totalReviews = _summary.totalReviews + 1;
-    final averageRating =
-        ((_summary.averageRating * _summary.totalReviews) + review.rating) /
-        totalReviews;
-
-    _summary = ProviderReviewSummary(
-      averageRating: averageRating,
-      totalReviews: totalReviews,
-      ratingCounts: ratingCounts,
-      reviews: reviews,
-    );
-    return _summary;
+    _reviewsByProvider.putIfAbsent(providerId, () => []).insert(0, review);
+    return getReviews(providerId: providerId, initialSummary: initialSummary);
   }
 }

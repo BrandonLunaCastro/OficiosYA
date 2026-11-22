@@ -1,6 +1,7 @@
 import 'package:oficios/models/provider.dart';
+import 'package:oficios/data/mocks/mock_provider_reviews.dart';
 
-const List<Provider> mockProviders = [
+final List<Provider> mockProviders = [
   Provider(
     id: 'prestador-plomeria-01',
     initials: 'CR',
@@ -16,6 +17,7 @@ const List<Provider> mockProviders = [
     aboutMe: 'Plomero matriculado con más de 12 años de experiencia en instalaciones domiciliarias, filtraciones, desagues y gas. Atención rápida en San Martín y zonas aledañas.',
     phone: '+54 261 555-0129',
     email: 'carlos.rodriguez@fixmendoza.com',
+    initialReviewSummary: mockProviderReviewSummary,
   ),
   Provider(
     id: 'prestador-electricidad-01',

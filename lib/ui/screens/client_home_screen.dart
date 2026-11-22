@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oficios/data/repositories/order_repository.dart';
 import 'package:oficios/data/repositories/provider_repository.dart';
+import 'package:oficios/data/repositories/provider_review_repository.dart';
 import 'package:oficios/data/repositories/user_profile_repository.dart';
 import 'package:oficios/models/provider.dart';
 import 'package:oficios/routes/app_routes.dart';
@@ -19,11 +20,13 @@ class ClientHomeScreen extends StatefulWidget {
     required this.profileRepository,
     required this.providerRepository,
     required this.orderRepository,
+    required this.reviewRepository,
   });
 
   final UserProfileRepository profileRepository;
   final ProviderRepository providerRepository;
   final OrderRepository orderRepository;
+  final ProviderReviewRepository reviewRepository;
 
   @override
   State<ClientHomeScreen> createState() => _ClientHomeScreenState();
@@ -68,6 +71,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                             builder: (context) => SearchResultsScreen(
                               providerRepository: widget.providerRepository,
                               orderRepository: widget.orderRepository,
+                              reviewRepository: widget.reviewRepository,
                               profileRepository: widget.profileRepository,
                             ),
                           ),
@@ -145,6 +149,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                                               provider: provider,
                                               orderRepository:
                                                   widget.orderRepository,
+                                              reviewRepository:
+                                                  widget.reviewRepository,
                                               profileRepository:
                                                   widget.profileRepository,
                                             ),
@@ -175,6 +181,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                 builder: (context) => SearchResultsScreen(
                   providerRepository: widget.providerRepository,
                   orderRepository: widget.orderRepository,
+                  reviewRepository: widget.reviewRepository,
                   profileRepository: widget.profileRepository,
                 ),
               ),
@@ -202,6 +209,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
               builder: (context) => SearchResultsScreen(
                 providerRepository: widget.providerRepository,
                 orderRepository: widget.orderRepository,
+                reviewRepository: widget.reviewRepository,
                 profileRepository: widget.profileRepository,
                 initialCategory: category,
               ),

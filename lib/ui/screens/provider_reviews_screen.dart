@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:oficios/data/repositories/professional_profile_repository.dart';
 import 'package:oficios/data/repositories/provider_review_repository.dart';
 import 'package:oficios/models/provider_review.dart';
 import 'package:oficios/routes/app_routes.dart';
 import 'package:oficios/ui/widgets/provider_bottom_nav.dart';
 
 class ProviderReviewsScreen extends StatefulWidget {
-  const ProviderReviewsScreen({super.key, required this.reviewRepository});
+  const ProviderReviewsScreen({
+    super.key,
+    required this.reviewRepository,
+    required this.profileRepository,
+  });
 
   final ProviderReviewRepository reviewRepository;
+  final ProfessionalProfileRepository profileRepository;
 
   @override
   State<ProviderReviewsScreen> createState() => _ProviderReviewsScreenState();
@@ -24,7 +30,25 @@ class _ProviderReviewsScreenState extends State<ProviderReviewsScreen> {
   @override
   void initState() {
     super.initState();
-    _reviewsFuture = widget.reviewRepository.getReviews();
+    _reviewsFuture = _loadReviews();
+  }
+
+  Future<ProviderReviewSummary> _loadReviews() async {
+    final profile = await widget.profileRepository.getProfile();
+    final initialSummary =
+        profile.initialReviewSummary ??
+        ProviderReviewSummary.fromProviderStats(
+          averageRating: profile.rating,
+          totalReviews: profile.reviews,
+        );
+    final providerId = profile.id.trim().isEmpty
+        ? profile.name.trim()
+        : profile.id;
+
+    return widget.reviewRepository.getReviews(
+      providerId: providerId,
+      initialSummary: initialSummary,
+    );
   }
 
   @override
@@ -191,7 +215,7 @@ class _SummaryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                summary.averageRating.toStringAsFixed(1),
+                summary.displayRating,
                 style: const TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:oficios/data/repositories/mock_professional_profile_repository.dart';
 import 'package:oficios/data/repositories/mock_provider_review_repository.dart';
 import 'package:oficios/ui/screens/provider_reviews_screen.dart';
 
@@ -8,9 +9,10 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: ProviderReviewsScreen(
-          reviewRepository: MockProviderReviewRepository(),
+          reviewRepository: const MockProviderReviewRepository(),
+          profileRepository: MockProfessionalProfileRepository(),
         ),
       ),
     );
