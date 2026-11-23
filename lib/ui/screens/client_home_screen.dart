@@ -39,7 +39,11 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
   @override
   void initState() {
     super.initState();
-    _providersFuture = widget.providerRepository.getProviders();
+    final location =
+        widget.profileRepository.getProfile().location;
+    _providersFuture = widget.providerRepository.getProviders(
+      location: location,
+    );
   }
 
   @override

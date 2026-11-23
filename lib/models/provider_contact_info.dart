@@ -1,4 +1,5 @@
 class ProviderContactInfo {
+  final String profileId;
   final String city;
   final String province;
   final String coverageZone;
@@ -6,6 +7,7 @@ class ProviderContactInfo {
   final String email;
 
   const ProviderContactInfo({
+    this.profileId = '',
     required this.city,
     required this.province,
     required this.coverageZone,
@@ -14,6 +16,7 @@ class ProviderContactInfo {
   });
 
   ProviderContactInfo copyWith({
+    String? profileId,
     String? city,
     String? province,
     String? coverageZone,
@@ -21,6 +24,7 @@ class ProviderContactInfo {
     String? email,
   }) {
     return ProviderContactInfo(
+      profileId: profileId ?? this.profileId,
       city: city ?? this.city,
       province: province ?? this.province,
       coverageZone: coverageZone ?? this.coverageZone,

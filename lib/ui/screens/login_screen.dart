@@ -67,15 +67,20 @@ class _LoginState extends State<Login> {
       late final String destination;
       switch (account.role) {
         case AccountRole.client:
-          widget.clientProfileRepository.saveProfile(account.clientProfile!);
+          await widget.clientProfileRepository.activateProfile(
+            account.clientProfile!,
+          );
           destination = AppRoutes.clientHome;
           break;
         case AccountRole.professional:
-          await widget.professionalProfileRepository.updateProfile(
-            account.professionalProfile!,
+          final professionalProfile = await widget.professionalProfileRepository
+              .activateProfile(account.professionalProfile!);
+          await widget.providerContactRepository.activateProfile(
+            profileId: professionalProfile.id,
+            fallback: account.providerContactInfo!,
           );
-          await widget.providerContactRepository.updateContactInfo(
-            account.providerContactInfo!,
+          await widget.professionalProfileRepository.updateProfile(
+            professionalProfile,
           );
           destination = AppRoutes.professionalProfile;
           break;

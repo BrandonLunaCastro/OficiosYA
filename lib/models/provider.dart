@@ -13,6 +13,7 @@ class Provider {
   final String aboutMe;
   final String phone;
   final String email;
+  final String location;
   final String coverageZone;
   final String availabilityStatus;
   final ProviderReviewSummary? initialReviewSummary;
@@ -30,6 +31,7 @@ class Provider {
     this.aboutMe = '',
     this.phone = '',
     this.email = '',
+    this.location = '',
     this.coverageZone = 'Mendoza Capital',
     this.availabilityStatus = 'Disponible esta semana',
     this.initialReviewSummary,

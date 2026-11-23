@@ -1,18 +1,15 @@
 import "package:flutter/material.dart";
 
 class Logo extends StatelessWidget {
-
   final String label;
 
-  const Logo({
-    super.key,
-    required this.label
-  });
+  const Logo({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children:[
+      mainAxisSize: MainAxisSize.min,
+      children: [
         Image(
           image: AssetImage('assets/images/logo.jpeg'),
           width: 60,

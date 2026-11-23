@@ -12,6 +12,14 @@ class MockProfessionalProfileRepository
   Future<ProfessionalProfile> getProfile() async => _profile;
 
   @override
+  Future<ProfessionalProfile> activateProfile(
+    ProfessionalProfile fallback,
+  ) async {
+    _profile = fallback;
+    return _profile;
+  }
+
+  @override
   Future<void> updateProfile(ProfessionalProfile profile) async {
     if (profile.name.trim().isEmpty ||
         profile.specialty.trim().isEmpty ||

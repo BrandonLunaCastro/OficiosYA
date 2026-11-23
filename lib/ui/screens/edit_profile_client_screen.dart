@@ -40,17 +40,26 @@ class _EditProfileClientScreenState extends State<EditProfileClientScreen> {
     super.dispose();
   }
 
-  void _guardarCambios() {
+  Future<void> _guardarCambios() async {
     final profile = widget.profileRepository.getProfile();
-    widget.profileRepository.saveProfile(
-      profile.copyWith(
-        name: _nameController.text,
-        email: _emailController.text,
-        phone: _phoneController.text,
-        location: _locationController.text,
-      ),
-    );
+    try {
+      await widget.profileRepository.saveProfile(
+        profile.copyWith(
+          name: _nameController.text,
+          email: _emailController.text,
+          phone: _phoneController.text,
+          location: _locationController.text,
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo guardar el perfil: $error')),
+      );
+      return;
+    }
 
+    if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.clientHome,

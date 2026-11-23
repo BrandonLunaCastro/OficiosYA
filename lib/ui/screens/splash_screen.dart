@@ -25,8 +25,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Logo(label: 'OficiosYA'),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Logo(label: 'OficiosYA'),
+              SizedBox(height: 12),
+              Text('Encontrá a quien lo resuelve'),
+            ],
+          ),
+        ),
       ),
     );
   }

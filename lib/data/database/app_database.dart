@@ -27,11 +27,13 @@ class AppDatabase {
 
     return openDatabase(
       pathToDatabase,
-      version: 3,
+      version: 5,
       onCreate: (database, version) async {
         await _createOrdersTable(database);
         await _createAccountsTable(database);
         await _createProviderReviewsTable(database);
+        await _createClientProfilesTable(database);
+        await _createProfessionalProfileTables(database);
       },
       onUpgrade: (database, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -39,6 +41,12 @@ class AppDatabase {
         }
         if (oldVersion < 3) {
           await _createProviderReviewsTable(database);
+        }
+        if (oldVersion < 4) {
+          await _createClientProfilesTable(database);
+        }
+        if (oldVersion < 5) {
+          await _createProfessionalProfileTables(database);
         }
       },
     );
@@ -95,6 +103,44 @@ class AppDatabase {
     await database.execute('''
       CREATE INDEX provider_reviews_by_provider_date
       ON provider_reviews(provider_id, reviewed_at DESC)
+    ''');
+  }
+
+  Future<void> _createClientProfilesTable(Database database) async {
+    await database.execute('''
+      CREATE TABLE client_profiles (
+        profile_id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        location TEXT NOT NULL
+      )
+    ''');
+  }
+
+  Future<void> _createProfessionalProfileTables(Database database) async {
+    await database.execute('''
+      CREATE TABLE professional_profiles (
+        profile_id TEXT PRIMARY KEY,
+        initials TEXT NOT NULL,
+        name TEXT NOT NULL,
+        specialty TEXT NOT NULL,
+        location TEXT NOT NULL,
+        rating REAL NOT NULL,
+        reviews INTEGER NOT NULL,
+        about TEXT NOT NULL,
+        published_services INTEGER NOT NULL
+      )
+    ''');
+    await database.execute('''
+      CREATE TABLE professional_contacts (
+        profile_id TEXT PRIMARY KEY,
+        city TEXT NOT NULL,
+        province TEXT NOT NULL,
+        coverage_zone TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        email TEXT NOT NULL
+      )
     ''');
   }
 }

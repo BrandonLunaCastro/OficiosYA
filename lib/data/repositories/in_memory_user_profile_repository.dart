@@ -9,12 +9,22 @@ class InMemoryUserProfileRepository implements UserProfileRepository {
   static final instance = InMemoryUserProfileRepository();
 
   UserProfile _profile;
+  final Map<String, UserProfile> _profilesById = {};
 
   @override
   UserProfile getProfile() => _profile;
 
   @override
-  void saveProfile(UserProfile profile) {
+  Future<UserProfile> activateProfile(UserProfile fallback) async {
+    _profile = _profilesById[fallback.id] ?? fallback;
+    return _profile;
+  }
+
+  @override
+  Future<void> saveProfile(UserProfile profile) async {
     _profile = profile;
+    if (profile.id.isNotEmpty) {
+      _profilesById[profile.id] = profile;
+    }
   }
 }

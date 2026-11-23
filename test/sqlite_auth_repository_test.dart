@@ -4,7 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:oficios/data/database/app_database.dart';
 import 'package:oficios/data/repositories/auth_repository.dart';
 import 'package:oficios/data/repositories/sqlite_auth_repository.dart';
+import 'package:oficios/data/repositories/mock_provider_repository.dart';
+import 'package:oficios/data/repositories/sqlite_professional_profile_repository.dart';
+import 'package:oficios/data/repositories/sqlite_provider_contact_repository.dart';
+import 'package:oficios/data/repositories/sqlite_user_profile_repository.dart';
 import 'package:oficios/models/auth_account.dart';
+import 'package:oficios/models/user_profile.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -148,6 +153,139 @@ void main() {
       expect(orders.single['service'], 'Plomería');
       expect(accountsTable, hasLength(1));
       expect(reviewsTable, hasLength(1));
+    },
+  );
+
+  test('persists client locations separately for each account', () async {
+    final directory = await Directory.systemTemp.createTemp(
+      'oficios_client_profiles_',
+    );
+    addTearDown(() async {
+      if (await directory.exists()) {
+        await directory.delete(recursive: true);
+      }
+    });
+    final database = AppDatabase(
+      databasePath: path.join(directory.path, 'profiles.db'),
+    );
+    addTearDown(database.close);
+    final repository = SqliteUserProfileRepository(database: database);
+    const maipuClient = UserProfile(
+      id: 'client-1',
+      name: 'Cliente Maipú',
+      email: 'maipu@example.com',
+      phone: '2615550001',
+      location: 'Maipú, Mendoza',
+    );
+    const capitalClient = UserProfile(
+      id: 'client-2',
+      name: 'Cliente Capital',
+      email: 'capital@example.com',
+      phone: '2615550002',
+      location: 'Mendoza Capital, Mendoza',
+    );
+
+    await repository.activateProfile(maipuClient);
+    await repository.saveProfile(maipuClient);
+    await repository.activateProfile(capitalClient);
+    await repository.saveProfile(capitalClient);
+
+    final maipuReopenedRepository = SqliteUserProfileRepository(
+      database: database,
+    );
+    final restoredMaipu = await maipuReopenedRepository.activateProfile(
+      maipuClient.copyWith(location: 'Mendoza Capital, Mendoza'),
+    );
+
+    expect(restoredMaipu.location, 'Maipú, Mendoza');
+    await repository.activateProfile(capitalClient);
+    expect(repository.getProfile().location, 'Mendoza Capital, Mendoza');
+  });
+
+  test(
+    'finds a professional by city even when coverage zone differs',
+    () async {
+      final directory = await Directory.systemTemp.createTemp(
+        'oficios_professional_search_',
+      );
+      addTearDown(() async {
+        if (await directory.exists()) {
+          await directory.delete(recursive: true);
+        }
+      });
+      final database = AppDatabase(
+        databasePath: path.join(directory.path, 'professionals.db'),
+      );
+      addTearDown(database.close);
+      final authRepository = SqliteAuthRepository(database: database);
+      await authRepository.register(
+        name: 'Carla Prestadora',
+        email: 'carla@example.com',
+        phone: '2615550003',
+        password: 'CarlaPass123',
+        role: AccountRole.professional,
+        specialty: 'Plomería',
+        about: 'Reparaciones e instalaciones.',
+      );
+      final account = await authRepository.signIn(
+        email: 'carla@example.com',
+        password: 'CarlaPass123',
+      );
+      final profileRepository = SqliteProfessionalProfileRepository(
+        database: database,
+      );
+      final contactRepository = SqliteProviderContactRepository(
+        database: database,
+      );
+      final profile = await profileRepository.activateProfile(
+        account.professionalProfile!,
+      );
+      final contact = await contactRepository.activateProfile(
+        profileId: profile.id,
+        fallback: account.providerContactInfo!,
+      );
+      await profileRepository.updateProfile(
+        profile.copyWith(location: 'Luján', name: 'Carla Prestadora'),
+      );
+      await contactRepository.updateContactInfo(
+        contact.copyWith(
+          city: 'Luján',
+          province: 'Mendoza',
+          coverageZone: 'Gran Mendoza',
+        ),
+      );
+
+      final reloadedProfiles = SqliteProfessionalProfileRepository(
+        database: database,
+      );
+      final reloadedProfile = await reloadedProfiles.activateProfile(
+        account.professionalProfile!,
+      );
+      final reloadedContacts = SqliteProviderContactRepository(
+        database: database,
+      );
+      final reloadedContact = await reloadedContacts.activateProfile(
+        profileId: reloadedProfile.id,
+        fallback: account.providerContactInfo!,
+      );
+      final providerRepository = MockProviderRepository(database: database);
+      final lujanProviders = await providerRepository.getProviders(
+        location: 'Luján, Mendoza',
+      );
+      final capitalProviders = await providerRepository.getProviders(
+        location: 'Mendoza Capital, Mendoza',
+      );
+
+      expect(reloadedContact.city, 'Luján');
+      expect(reloadedContact.coverageZone, 'Gran Mendoza');
+      expect(
+        lujanProviders.any((provider) => provider.id == reloadedProfile.id),
+        isTrue,
+      );
+      expect(
+        capitalProviders.any((provider) => provider.id == reloadedProfile.id),
+        isFalse,
+      );
     },
   );
 }

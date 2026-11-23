@@ -52,11 +52,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
 
   Future<List<Provider>> _loadProviders() {
+    final location = widget.profileRepository.getProfile().location;
     return widget.providerRepository.searchProviders(
       query: _searchController.text.trim(),
       category: widget.initialCategory,
       ratingMin: _filterRating45 ? 4.5 : null,
       maxDistanceKm: _filterMenos5km ? 5 : null,
+      location: location,
     );
   }
 

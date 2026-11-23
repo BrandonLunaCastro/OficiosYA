@@ -11,6 +11,15 @@ class MockProviderContactRepository implements ProviderContactRepository {
   Future<ProviderContactInfo> getContactInfo() async => _contactInfo;
 
   @override
+  Future<ProviderContactInfo> activateProfile({
+    required String profileId,
+    required ProviderContactInfo fallback,
+  }) async {
+    _contactInfo = fallback.copyWith(profileId: profileId);
+    return _contactInfo;
+  }
+
+  @override
   Future<void> updateContactInfo(ProviderContactInfo contactInfo) async {
     final values = [
       contactInfo.city,

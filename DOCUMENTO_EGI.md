@@ -4,7 +4,6 @@
 
 **Carrera:** Tecnicatura Universitaria en Desarrollo de Software  
 **Espacio curricular:** Programacion de Aplicaciones para Celulares  
-**Modalidad:** Individual  
 **Estudiante:** Brandon Luna 
 **Repositorio:** https://github.com/BrandonLunaCastro/OficiosYA
 
@@ -22,7 +21,7 @@ El problema es concreto: un cliente necesita encontrar rapidamente un profesiona
 
 **Cliente:** personas que necesitan contratar una solucion domiciliaria. Principalmente, usuarios que buscan velocidad, cercania y referencias antes de decidir. El perfil representativo es Martin Gonzalez, empleado administrativo de 28 años, que necesita localizar un profesional cercano y solicitar un presupuesto.
 
-**Prestador:** profesionales independientes de Mendoza que ofrecen servicios domiciliarios. El perfil representativo es Carlos Rodriguez, mecanico independiente de 42 años, que necesita mostrar su experiencia, ubicacion, datos de contacto, servicios y valoraciones.
+**Prestador:** profesionales independientes de Mendoza que ofrecen servicios domiciliarios. El perfil representativo es Carlos Rodriguez, plomero y gasista independiente de 42 años, que necesita mostrar su experiencia, ubicacion, datos de contacto, servicios y valoraciones.
 
 ## Justificacion
 
@@ -37,7 +36,6 @@ El usuario puede:
 - consultar los pedidos creados durante la sesion;
 - ver los datos de contacto del prestador;
 - editar el perfil propio;
-- registrar datos profesionales, cobertura, servicios y valoraciones.
 
 El prestador puede:
 
@@ -56,31 +54,56 @@ La solucion transforma una busqueda informal en un recorrido claro dentro de la 
 ## Flujo de navegacion
 
 ```text
-Splash
-  -> Onboarding
-       -> Inicio de sesion
-            |
-            |-- Cuenta demo cliente
-            |     -> Inicio del cliente
-            |          -> Editar perfil
-            |          -> Busqueda / filtros
-            |               -> Perfil del prestador
-            |                    -> Solicitar presupuesto
-            |          -> Pedidos
-            |               -> Datos de contacto del prestador
-            |
-            |-- Cuenta demo prestador
-                  -> Mi perfil profesional
-                       -> Editar perfil
-                       -> Servicios
-                       |    -> Agregar o editar servicio
-                       -> Pedidos de clientes
-                       |    -> Datos y contacto del cliente
-                       -> Ubicacion y contacto
-                       -> Resenas
+                         INICIO DE LA APLICACION
+                                  |
+                             [Splash]
+                                  |
+                            [Onboarding]
+                                  |
+                           [Inicio de sesion]
+                            /              \
+                    Cuenta cliente      Cuenta prestador
+                            |                    |
+                    [Inicio cliente]     [Perfil profesional]
+                 /          |          \      /      |      \
+         [Busqueda]  [Pedidos]  [Editar] [Servicios] [Pedidos] [Contacto] [Resenas]
+               |                            |
+       [Resultados + filtros]          [Agregar o editar]
+               |
+       [Perfil del prestador]
+               |
+    [Solicitar presupuesto]
+               |
+          [Confirmacion]
+               |
+          [Pedido guardado]
 ```
 
-El flujo esta registrado centralmente en [app_router.dart](lib/routes/app_router.dart) y [app_routes.dart](lib/routes/app_routes.dart). La pantalla inicial es el Splash, declarado en [main.dart](lib/main.dart). El login mock identifica el rol por las credenciales y abre directamente el inicio correspondiente; no vuelve a solicitar la carga inicial del perfil.
+El flujo esta registrado centralmente en [app_router.dart](lib/routes/app_router.dart) y [app_routes.dart](lib/routes/app_routes.dart). La pantalla inicial es el Splash, declarado en [main.dart](lib/main.dart). El inicio de sesion identifica el rol y abre directamente el inicio correspondiente.
+
+### Recorrido del usuario cliente
+
+1. El cliente abre la aplicacion y recorre el Splash y el Onboarding.
+2. Inicia sesion con una cuenta demo o una cuenta registrada en SQLite.
+3. En el inicio visualiza categorias, prestadores destacados y el buscador.
+4. Selecciona una categoria o escribe el nombre de un oficio.
+5. Combina filtros de destacados, valoracion minima y distancia.
+6. Selecciona un prestador y consulta su perfil, reputacion y servicios.
+7. Pulsa **Solicitar presupuesto**, completa los datos y confirma.
+8. La solicitud se guarda en SQLite y aparece en **Pedidos**.
+9. Desde el pedido consulta el telefono y el correo del prestador.
+
+### Recorrido del usuario prestador
+
+1. El prestador inicia sesion o registra una cuenta profesional.
+2. La aplicacion abre directamente **Mi perfil profesional**.
+3. Desde **Editar perfil** modifica nombre, oficio y descripcion.
+4. En **Servicios** agrega o modifica un servicio publicado.
+5. En **Ubicacion y contacto** actualiza cobertura, telefono y correo.
+6. En **Pedidos** consulta las solicitudes destinadas a su perfil.
+7. Selecciona una solicitud y accede a los datos del cliente.
+8. Desde el detalle puede iniciar una llamada o redactar un correo.
+9. En **Resenas** consulta promedio, distribucion y comentarios.
 
 ## Pantallas clave
 
@@ -94,7 +117,7 @@ Presentan la identidad de la aplicacion y explican el funcionamiento basico ante
 
 ### Acceso y alta de cuenta
 
-El prototipo incluye pantallas para elegir el rol y registrarse. En la version implementada, el inicio de sesion usa las cuentas mock de demostracion y dirige cada rol a su pantalla; el formulario de registro todavia no crea cuentas.
+El prototipo incluye pantallas para elegir el rol y registrarse. En la version implementada, el inicio de sesion reconoce cuentas mock y cuentas reales creadas en SQLite. El formulario de registro valida los datos, permite seleccionar cliente o prestador y guarda la cuenta en la base local.
 
 ![Elegir perfil](CapturasDiseño/Figma/elegir-perfil.png)
 
@@ -166,7 +189,7 @@ Los componentes visuales reutilizables incluyen [primary_button.dart](lib/ui/wid
 
 ## Evidencia de diseno
 
-- Prototipo Figma: https://www.figma.com/proto/V1CpKzNQsStl02izWPUUeK/OficiosYa?node-id=0-1&t=eueAPB3OV8UZe9wv-1
+- Prototipo Figma: https://www.figma.com/design/sS95vL0ooCGJMachOMybxz/Untitled?node-id=0-1&t=VPQEpse0YppDxvjt-1
 - Capturas de prototipo: [CapturasDiseño/Figma](CapturasDiseño/Figma/)
 - Capturas ejecutadas en dispositivo o emulador: [CapturasDiseño/Dispositivo](CapturasDiseño/Dispositivo/)
 
@@ -176,11 +199,11 @@ Los componentes visuales reutilizables incluyen [primary_button.dart](lib/ui/wid
 
 ## Estado del desarrollo
 
-La aplicacion fue desarrollada con **Flutter y Dart**. Incluye navegacion, modelos, repositorios, pantallas, widgets reutilizables y pruebas automatizadas. Las cuentas de demostracion permiten probar los flujos principales de cliente y prestador sin una base de datos.
+La aplicacion fue desarrollada con **Flutter y Dart**. Incluye navegacion, modelos, repositorios, pantallas, widgets reutilizables y pruebas automatizadas. Utiliza SQLite para persistir cuentas, pedidos y valoraciones; las cuentas de demostracion siguen disponibles para probar rapidamente ambos roles.
 
 ## Cuentas mock para probar el inicio de sesion
 
-El inicio de sesion valida credenciales locales de demostracion y carga el perfil asociado al rol. No utiliza una base de datos ni representa autenticacion segura para produccion.
+El inicio de sesion reconoce primero las credenciales locales de demostracion. Si no corresponden a una cuenta reservada, consulta la base SQLite y verifica la contraseña mediante PBKDF2 con una sal aleatoria. El sistema permite registrar cuentas nuevas y cerrar sesion desde las pantallas principales.
 
 | Rol | Correo | Contrasena |
 |---|---|---|
@@ -198,7 +221,7 @@ Al autenticar una cuenta de cliente se abre el inicio del cliente; al autenticar
 - Carga automatica del perfil y acceso directo segun el rol de la cuenta.
 - Navegacion principal mediante `MaterialApp` y rutas nombradas.
 
-La autenticacion de demostracion esta en [mock_auth_repository.dart](lib/data/repositories/mock_auth_repository.dart); la interfaz de login, en [login_screen.dart](lib/ui/screens/login_screen.dart). La pantalla de registro es actualmente una maqueta y todavia no crea cuentas nuevas.
+La autenticacion esta implementada en [sqlite_auth_repository.dart](lib/data/repositories/sqlite_auth_repository.dart), que conserva compatibilidad con las cuentas demo de [mock_auth_repository.dart](lib/data/repositories/mock_auth_repository.dart). La interfaz de inicio esta en [login_screen.dart](lib/ui/screens/login_screen.dart) y el registro funcional en [register_screen.dart](lib/ui/screens/register_screen.dart).
 
 ### Rol cliente
 
@@ -212,7 +235,7 @@ La autenticacion de demostracion esta en [mock_auth_repository.dart](lib/data/re
 - Datos de cliente de demostracion precargados al iniciar sesion.
 - Calificacion del prestador con estrellas y comentario opcional.
 
-La logica de busqueda esta en [mock_provider_repository.dart](lib/data/repositories/mock_provider_repository.dart), y el registro de pedidos en [in_memory_order_repository.dart](lib/data/repositories/in_memory_order_repository.dart).
+La logica de busqueda esta en [mock_provider_repository.dart](lib/data/repositories/mock_provider_repository.dart), y el registro de pedidos en [sqlite_order_repository.dart](lib/data/repositories/sqlite_order_repository.dart).
 
 ### Rol prestador
 
@@ -247,20 +270,19 @@ lib/
     └── widgets/  # componentes reutilizables
 ```
 
-Los nombres de clases, archivos y metodos describen su responsabilidad. Por ejemplo, `ProviderProfileScreen`, `SearchResultsScreen`, `MockProviderServiceRepository` e `InMemoryOrderRepository`.
+Los nombres de clases, archivos y metodos describen su responsabilidad. Por ejemplo, `ProviderProfileScreen`, `SearchResultsScreen`, `MockProviderServiceRepository` y `SqliteOrderRepository`.
 
 Los repositorios permiten reemplazar las implementaciones mock por una base de datos sin modificar las pantallas que dependen de sus contratos. Esto separa la interfaz, los datos y la logica.
 
 ## Persistencia y datos
 
-En esta version no se usa SQLite ni una base remota. Los datos mock y los cambios realizados durante la ejecucion se mantienen en memoria:
+La persistencia usa SQLite para cuentas, pedidos y valoraciones, mediante [app_database.dart](lib/data/database/app_database.dart). Los demas datos mock se mantienen en memoria:
 
 - servicios y perfiles compartidos entre pantallas;
 - contacto profesional compartido;
-- pedidos creados desde el perfil del prestador;
 - perfil del usuario en memoria.
 
-Los datos se pierden al cerrar o reiniciar la aplicacion. Esta decision permite probar todos los recorridos sin depender de un servicio externo.
+Las cuentas registradas, pedidos y valoraciones se conservan al cerrar o reiniciar la aplicacion. Los servicios, perfiles profesionales, contacto y perfil del cliente actual siguen perdiéndose al reiniciar, porque todavía usan repositorios mock o en memoria.
 
 ## Ejecucion
 
@@ -289,6 +311,106 @@ La suite cuenta con 33 pruebas verificadas, incluyendo autenticacion mock, onboa
 ---
 
 # IV. Analisis critico
+
+## Fundamentos teoricos aplicados a OficiosYa
+
+### 1. Arquitectura de maquetado en Flutter
+
+Flutter construye las interfaces mediante composicion: los elementos complejos se forman a partir de widgets sencillos. Por ejemplo, el perfil del prestador combina `Scaffold`, `AppBar`, `CircleAvatar`, `Row`, `Column`, `Container`, `Text`, `Icon` y botones dentro de [provider_profile_screen.dart](lib/ui/screens/provider_profile_screen.dart). La pantalla tambien reutiliza componentes como `PrimaryButton`, `ProviderCard`, `CustomTextField` y `SearchBarField`.
+
+Cada pantalla se describe en el metodo `build(BuildContext context)`. El padre aplica restricciones al hijo, el hijo determina su tamaño dentro de ellas y el padre decide su posicion. Esta relacion explica el uso de `Expanded`, `Padding`, `Row`, `Column`, `SafeArea` y `SingleChildScrollView`: permiten distribuir o desplazar el contenido sin que se desborde en dispositivos pequenos.
+
+### 2. Widgets estructurales e interactivos
+
+`Scaffold` funciona como armazon principal de las pantallas; `AppBar` contiene navegacion o acciones y `body` presenta el contenido. `ListView` se utiliza para mostrar colecciones desplazables, como las solicitudes recibidas en [provider_orders_screen.dart](lib/ui/screens/provider_orders_screen.dart).
+
+`ListTile` organiza titulo, subtitulo y accion de manera consistente. En la aplicacion, las tarjetas reutilizan esta misma idea visual para presentar el oficio, la ubicacion, la valoracion y el prestador. La propiedad `onTap` convierte la tarjeta o fila en un elemento interactivo y abre el perfil o el detalle correspondiente. Los botones usan `TextButton`, `IconButton` o `PrimaryButton` segun la importancia de la accion.
+
+### 3. Navegacion lineal
+
+El flujo de la aplicacion sigue principalmente un itinerario lineal: listado o busqueda -> perfil del prestador -> solicitud de presupuesto -> pedidos o confirmacion. El prestador recorre tambien una secuencia: perfil -> edicion, servicios, solicitudes, ubicacion y contacto.
+
+Las rutas nombradas registradas en [app_router.dart](lib/routes/app_router.dart) reducen la relacion directa entre pantallas y facilitan avanzar o volver. Esta navegacion es apropiada para usuarios que quieren resolver una tarea, porque evita obligarlos a administrar un menu complejo de relaciones entre pantallas.
+
+### 4. Usabilidad: "No me hagas pensar"
+
+La aplicacion organiza acciones visibles y predecibles: categorias en el inicio, filtros con nombres claros, valoraciones con estrellas, estados verificados con iconos verdes y botones azules para continuar. La propiedad del usuario no depende de adivinar el significado de un simbolo.
+
+Como regla de diseno, la pantalla debe mostrar donde se puede actuar y que ocurrira despues de tocar. La etiqueta "Solicitar presupuesto", por ejemplo, comunica mejor la accion que un generico "Enviar". Las cuentas demo tambien reducen la carga cognitiva, ya que permiten completar rapidamente la prueba de cada rol.
+
+### 5. Restricciones del entorno tactil
+
+En un celular no hay cursor ni estados de *hover*. Por eso los elementos accionables usan bordes, rellenos, iconos, posicion fija y cambios de estado visual. El perfil del prestador mantiene como accion principal el presupuesto; las operaciones de llamada y correo usan iconos y textos explicitos.
+
+La menor superficie disponible exige priorizar el contenido. OficiosYa emplea `SingleChildScrollView`, barras de navegacion inferiores y tarjetas verticales para conservar una lectura clara. Los textos secundarios deben informar sin competir con el nombre del prestador, la accion principal o la ubicacion.
+
+### 6. Modelado de datos y persistencia local
+
+Las entidades se representan con clases Dart tipadas dentro de [lib/models](lib/models). Por ejemplo, `Provider`, `OrderRequest`, `ProfessionalProfile`, `ProviderService` y `ProviderReview` separan atributos, identificadores y datos relacionados.
+
+La persistencia combina SQLite y repositorios mock. [app_database.dart](lib/data/database/app_database.dart) crea las tablas `accounts`, `orders` y `provider_reviews`. Los repositorios SQLite guardan cuentas con contraseña cifrada por derivación, solicitudes de presupuesto y valoraciones. Los perfiles profesionales, servicios y contacto siguen usando repositorios mock; el perfil del cliente usa memoria. Esta combinación permite validar persistencia real sin migrar por completo los datos del prototipo.
+
+### 7. Formularios, validacion y feedback
+
+Las pantallas de alta y edicion utilizan `Form`, claves de estado y campos controlados para recopilar datos. La clave `_formKey` permite invocar `validate()` antes de guardar y evitar registrar informacion incompleta. Los campos reutilizables definen etiquetas y pistas que orientan al usuario sobre el dato esperado.
+
+Al iniciar sesion se verifica primero que correo y contraseña no estén vacios y despues se procesa la cuenta. El resultado se comunica con `SnackBar`: mensajes de éxito, credenciales invalidas o errores de carga hacen visibles las consecuencias de la accion sin bloquear innecesariamente toda la interfaz.
+
+### 8. La prueba de usabilidad evalua, no crea
+
+Una prueba de usabilidad observa a una persona resolviendo una tarea real y documenta confusiones, bloqueos y resultados. No sirve para pedir opiniones aisladas sobre el color o hacer que el coordinador explica como debe usarse la pantalla.
+
+En la aplicacion, tareas posibles son: encontrar un plomero cerca, solicitar presupuesto, llamar al cliente desde una solicitud recibida, editar un servicio o calificar al prestador. Las dificultades observadas permitirian mejorar la navegacion y los textos sin convertir opiniones personales en cambios arbitrarios.
+
+### 9. Prueba rapida con un solo usuario
+
+Para este proyecto no se requiere construir primero un laboratorio costoso. Hacer una prueba temprana con una persona usuaria es preferible a no probar. El valor aumenta si se realiza antes de cerrar el diseño completo, porque permite detectar problemas estructurales mientras los bocetos siguen siendo faciles de modificar.
+
+Una sola prueba con un inicio de sesion de cliente puede revelar si las categorias son reconocibles, si los filtros se entienden y si el usuario encuentra sin ayuda el perfil y el boton de presupuesto. Una prueba posterior con el rol prestador puede verificar pedidos, contacto, servicios y reseñas.
+
+### 10. Protocolo de pensar en voz alta
+
+Durante una prueba se debe pedir al participante que diga continuamente que intenta hacer, que informacion busca y que cree que sucedera al tocar. El coordinador observa, toma notas y mantiene una actitud neutral.
+
+No debe demostrar el flujo, darle pistas ni explicar las decisiones de codigo. Si el usuario se detiene, puede preguntar: "¿Que estas buscando ahora?" o "¿Que crees que ocurrira si seleccionas este boton?". Las respuestas permiten separar un problema de interfaz real de una duda provocada por la intervencion del coordinador.
+
+### 11. Evitar debates religiosos con datos de comportamiento
+
+Decidir subjetivamente que un boton debe ir a izquierda o derecha, o que el azul es mejor que el verde, genera debates sin evidencia. En el diseño de una interfaz, el criterio principal es si el usuario encuentra la accion y completa la tarea sin confusión.
+
+En OficiosYa, por ejemplo, el diseño debe evaluarse por si el usuario distingue rapidamente el perfil, los datos de contacto y el boton de presupuesto. Si una prueba muestra que confunde dos acciones, el problema se corrige con etiquetas, jerarquia o posicion, no con la opinion estética del desarrollador.
+
+### 12. Conformidad con expectativas y tolerancia a errores
+
+Los elementos deben mantenerse consistentes con las convenciones comunes y con el nivel de conocimiento del usuario. Los textos de accion deben anticipar el resultado y los mensajes de error deben explicar como corregirlo.
+
+La aplicacion intenta ofrecer esta tolerancia con validaciones, estados vacios y mensajes `SnackBar`. Por ejemplo, si todavía no existen pedidos se muestra una explicacion, y si falla una operacion se conserva un mensaje claro. Falta incorporar acciones de reintento y validaciones mas completas para que el usuario siempre pueda recuperar el flujo.
+
+### 13. Prototipado colaborativo de baja fidelidad
+
+Antes de escribir Dart se pueden dibujar la pantalla de inicio, resultados, perfil y pedidos en papel o wireframes. El equipo las recorre como si fuera el flujo real y detecta orden de informacion, acciones principales y cambios entre pantallas.
+
+Este tipo de prototipo facilita descartar una solucion barata, porque no requiere reconstruir código. Solo despues de validar el itinerario se implementan widgets, repositorios y pruebas, reduciendo riesgos y retrabajo.
+
+### 14. Descubrimiento continuo y enfoque Lean
+
+El descubrimiento continuo consiste en presentar borradores y medir el comportamiento real con regularidad. La aplicacion puede probarse con hipotesis como: "el usuario encuentra un prestador en menos pasos", "el cliente entiende el estado de su pedido" o "el prestador encuentra rapidamente una solicitud nueva".
+
+Los prototipos permiten aprender antes de invertir en funcionalidades de gran costo, como sincronizacion remota o mensajeria. El resultado de las pruebas debe guiar iteraciones pequeñas y medibles.
+
+### 15. Evidencia de usabilidad aplicada al proyecto
+
+La relacion entre teoria y codigo se verifica observando recorridos completos:
+
+1. el cliente abre la aplicacion, encuentra una categoria y selecciona filtros;
+2. entra al perfil de un prestador y comprende valoracion, distancia y servicios;
+3. solicita presupuesto y recibe confirmacion;
+4. consulta su pedido y datos de contacto;
+5. el prestador encuentra la solicitud recibida y puede iniciar llamada o correo.
+
+Estas tareas muestran si el diseño comunica estados, acciones y resultados. Los datos que se obtienen reemplazan las discusiones esteticas por observaciones directas.
+
+## Evaluacion tecnica integrada
 
 ## Interfaz declarativa
 
@@ -329,29 +451,28 @@ Las operaciones de repositorio utilizan `Future` y `async`:
 
 Las pantallas usan `FutureBuilder` para mostrar carga, datos o errores. Por ejemplo, [search_results_screen.dart](lib/ui/screens/search_results_screen.dart) mantiene un `_resultsFuture`, lo reemplaza al cambiar filtros y renderiza el resultado segun `snapshot`.
 
-La ventaja es que las operaciones pueden representar servicios futuros sin bloquear la interfaz. La limitacion es que los repositorios actuales resuelven inmediatamente, por lo que no se simula latencia real ni recuperacion ante fallos de red. La vista de pedidos del prestador filtra las solicitudes por el nombre del perfil acti
+La ventaja es que las operaciones pueden representar servicios futuros sin bloquear la interfaz. La limitacion es que los repositorios actuales resuelven inmediatamente, por lo que no se simula latencia real ni recuperacion ante fallos de red. La vista de pedidos del prestador filtra las solicitudes por el nombre del perfil activo.
 
 ## Persistencia
 
-La persistencia actual utiliza listas en memoria dentro de implementaciones como [in_memory_order_repository.dart](lib/data/repositories/in_memory_order_repository.dart) y [mock_provider_service_repository.dart](lib/data/repositories/mock_provider_service_repository.dart).
+La persistencia actual combina SQLite con datos en memoria. [sqlite_order_repository.dart](lib/data/repositories/sqlite_order_repository.dart), [sqlite_auth_repository.dart](lib/data/repositories/sqlite_auth_repository.dart) y [sqlite_provider_review_repository.dart](lib/data/repositories/sqlite_provider_review_repository.dart) usan [app_database.dart](lib/data/database/app_database.dart). En cambio, [mock_provider_service_repository.dart](lib/data/repositories/mock_provider_service_repository.dart) y [in_memory_user_profile_repository.dart](lib/data/repositories/in_memory_user_profile_repository.dart) mantienen datos solo durante la sesion.
 
 Esta solucion permite:
 
-- compartir cambios entre pantallas;
-- conservar pedidos y servicios mientras la aplicacion sigue abierta;
-- desarrollar sin configuracion externa;
-- mantener contratos preparados para una futura implementacion real.
+- conservar cuentas, pedidos y valoraciones al reiniciar;
+- compartir datos mock entre pantallas durante la sesion;
+- desarrollar sin una API externa;
+- mantener contratos preparados para futuras implementaciones.
 
 Sin embargo, tiene limitaciones profesionales importantes:
 
-- los datos desaparecen al cerrar la aplicacion;
-- la autenticacion es solo mock y no gestiona usuarios reales;
+- servicios, perfiles profesionales, contacto y perfil del cliente pueden perderse al reiniciar;
+- las cuentas son locales y no representan autenticacion centralizada en un servidor;
 - no hay respaldo remoto;
 - no hay sincronizacion entre dispositivos;
 - no hay actualizacion en tiempo real;
 - los datos de prestadores son ficticios;
-- las solicitudes se comparten solo durante la sesion;
-- las cuentas de prueba estan predefinidas y el formulario de registro aun no crea cuentas.
+- las cuentas demo estan predefinidas y son independientes de las cuentas SQLite registradas.
 
 ## Ventajas tecnicas
 
@@ -360,6 +481,9 @@ Sin embargo, tiene limitaciones profesionales importantes:
 - Navegacion coherente y util en ambos roles.
 - Busqueda con varios criterios combinables.
 - Cambios compartidos durante la sesion.
+- Persistencia local SQLite de cuentas, pedidos y valoraciones.
+- Registro de cuentas con seleccion de rol y validacion.
+- Cierre de sesión desde el inicio y el perfil profesional.
 - Solicitudes visibles para el prestador destinatario, con acceso al contacto del cliente.
 - Manejo visual de carga y errores mediante `FutureBuilder`.
 - Pruebas de repositorios y pantallas.
@@ -367,8 +491,8 @@ Sin embargo, tiene limitaciones profesionales importantes:
 
 ## Limitaciones y mejoras
 
-1. **Persistencia:** reemplazar repositorios mock por SQLite, Hive o una API remota.
-2. **Autenticacion:** agregar cuentas reales, sesiones persistentes y permisos.
+1. **Persistencia:** migrar perfiles profesionales, servicios, contacto y perfil del cliente a SQLite o una API remota.
+2. **Autenticacion:** agregar recuperación de contraseña, sesiones persistentes seguras y permisos.
 3. **Datos:** validar datos reales de prestadores, DNI, matriculas y ubicacion.
 4. **Estado:** incorporar Provider, Riverpod o BLoC si la aplicacion crece.
 5. **Errores:** mejorar validaciones, estados vacios y reintentos ante fallos.
@@ -379,21 +503,7 @@ Sin embargo, tiene limitaciones profesionales importantes:
 
 ## Conclusion
 
-La aplicacion demuestra la relacion entre interfaz declarativa, arquitectura de widgets, gestion de estado, asincronia y persistencia dentro de un problema real. El principal logro tecnico es que las pantallas dependen de contratos de repositorio y pueden mostrar datos mock sin conocer su almacenamiento concreto. Las cuentas demo permiten probar los flujos de ambos roles, incluyendo pedidos entrantes del prestador y calificaciones, sin solicitar la carga manual del perfil en cada inicio.
+La aplicacion demuestra la relacion entre interfaz declarativa, arquitectura de widgets, gestion de estado, asincronia y persistencia dentro de un problema real. Los repositorios separan las pantallas del origen de datos y permiten combinar implementaciones SQLite con datos mock. Las cuentas nuevas se registran y verifican localmente, los pedidos y las valoraciones persisten al reiniciar, y las cuentas demo permiten probar rapidamente ambos roles.
 
-Como mejora prioritaria, se incorporaria persistencia real y autenticacion. Estas ampliaciones convertirian el prototipo funcional en una aplicacion util para usuarios reales y permitirian mantener perfiles, pedidos y servicios entre ejecuciones.
+Como mejora prioritaria, se completaria la migración de perfiles profesionales, servicios y perfiles de usuario hacia persistencia local o remota. Una API autenticada permitiría sincronizar usuarios y datos entre dispositivos y convertir el prototipo funcional en una aplicación util para usuarios reales.
 
----
-
-# Lista de control
-
-- [x] Completar nombre y apellido del estudiante.
-- [x] Se indica la tematica y el problema real.
-- [x] Se distingue al usuario destinatario.
-- [x] Se presenta el flujo de navegacion completo.
-- [x] Se muestran las pantallas clave y el criterio visual.
-- [x] La aplicacion tiene Flutter y esta organizada en widgets reutilizables.
-- [x] El repositorio de GitHub esta incluido.
-- [x] El analisis relaciona los conceptos con el codigo propio.
-- [x] Se indican ventajas y limitaciones.
-- [ ] Entregar este documento como PDF, Markdown o procesador de textos por el campus virtual.

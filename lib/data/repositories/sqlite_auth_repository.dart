@@ -189,6 +189,7 @@ class SqliteAuthRepository
         publishedServices: 0,
       ),
       providerContactInfo: ProviderContactInfo(
+        profileId: 'local-$id',
         city: 'Mendoza Capital',
         province: 'Mendoza',
         coverageZone: 'Mendoza y alrededores',
